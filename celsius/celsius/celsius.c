@@ -7,9 +7,10 @@ int main(void) {
 
 	float fahrenheit, celsius;
 	printf("input fahrenheit temperautre : ");
-	scanf_s("%f", &fahrenheit);
+	scanf_s("%f %f", &fahrenheit , &celsius);
 	celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
-	printf("Celsius equivalent : % .1f\n", celsius);
+	printf("Celsius equivalent : %15f  %d dsad  \n", celsius);
+
 
 	return 0;
 }
