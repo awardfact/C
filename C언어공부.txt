@@ -209,4 +209,90 @@ float는 더큰 숫자를 가질 수 있고 소수점도 표현이 가능하다 
 선언
 변수를 사용하기 위해서는 반드시 선언을 해야한다 선언을 하기 위해서는 먼저 변수의 타입을 입력한다 
 그리고 나서 변수의 이름을 입력한다 
-ex) int height; float profit;
+ex) int height; float profit; 인트형으로 height변수 선언, float형으로 profit변수 선언
+한번에 여러 변수도 선언이 가능하다 ( int height, length, width , volume;)
+그리고 변수를 선언하는 부분과 코드부분을 빈 줄로 구분하는것이 가독성에 좋다 
+변수를 코드 위쪽에 선언을 하는것이 맞지만 C99부터는 이것이 의무는 아니다 
+
+할당
+변수는 값을 할당할 수 있는데 다음과 같이 한다
+ex) height = 8; length = 12; width = 10;
+할당된 값은 바뀌기 전까지 지속된다 그리고 값 할당은 반드시 선언 이후에 해야한다 
+그리고 float값을 할당할때는 보통 소수점을 사용한다 
+ex) float profit = 2150.48;
+float변수에 지속적으로 소수점을 포함하려면 끝에 f를 붙이면 좋다 (float profit = 2150.48f;)
+f를 안붙이면 컴파일려가 경고를 출력한다 
+한번 할당된 변수는 다른 변수 계산에 사용할 수 있다
+ex) height = 8;  length = 12; width = 10; volume = height * length * width;(여기서 *는 곱하기 연산을 의미한다)
+
+변수의 값 출력
+printf함수를 이용하여 변수의 값을 출력할 수 있다 
+ex)printf("Height : %d\n", height); 여기서 %d는 height값으로 대체한다 
+%d는 오직 int값만 출력이 가능하다  float타입 값을 출력하려면 %f로 사용해야한다 float는 소수점 6자리까지 출력된다
+소수점 자리를 설정을 하고 싶다면 다음과 같이 사용한다
+ex) printf("profit : %.2f\n" , profit); 이렇게 하면 소수점 2자리수까지 출력된다 
+printf에서 사용할 수 있는 변수의 개수에는 제한이 없다  
+printf함수 내에서 연산해서 값을 출력할 수도 있다
+ex) printf("%d\n" , height * length * width);
+
+/는 나누기 연산을 의미하는데 나눠지는 값이 정수면 연산 결과는 소수점을 버린 정수가 나온다 
+
+초기값 설정
+어떤 변수는 자동으로 0으로 초기화 된다 그러나 대부분의 경우는 그렇지 않다 
+그래서 항상 변수를 선언할 떄 값을 초기화 해주는 것이 좋다 
+ex) int height = 8;  
+변수를 한꺼번에 초기화는 할 수 없다
+ex) int height , length , width = 10; 이렇게 하면 width만 10으로 초기화되고 나머지는 초기화되지않는다 
+
+
+입력받기
+scanf함수를 통해 사용자에게 값을 입력받을 수 있다 scanf는 printf와 대응되는 함수여서 구성이 비슷하다 사용은 다음과 같이 한다
+ex) scanf("%d" , &i);  int값을 받아와서 i에 넣는다
+%d는 printf에서와 마찬가지로 int형 값을 받는다는것을 의미한다 &i는 i의 주소를 나타낸다 
+i의 주소에 int형 값을 넣는다는 것을 의미한다 floaat형은 다음과 같이 사용한다
+ex) scnaf("%f", &x);  float값을 받아서 x에 넣는다 
+
+매크로 상수 선언
+매크로 상수는 선언하면 그 값은 바꿀 수 없게된다 선언은 다음과 같이 한다
+#define INCHES_PER_POUND 166
+#define은#include처럼 전처리기쪽에서 수행해서 세미콜론을 사용하지 않고 줄이 끝나면 명령이 끝난다 
+컴파일할때 전처리기는 각각의 매크로 값을 코드에서 치환한다
+ex) weight = (volume + INCHES_PER_POUND - 1) / INCHES_PER_POUND); 여기서 매크로 상수 부분이 166으로 변한다
+매크로 상수는 대문자를 사용하고 문장 사이에는_를 넣는다 
+
+식별자
+식별자는 변수, 함수, 매크로 등에 이름을 붙인것을 말한다 식별자는 알파벳, 숫자, 그리고 _ 가 들어갈 수 있다 그러나
+반드시 처음은 알파벳 또는 _ 가 들어가야 한다 
+ex) times10 , goet_next_char  _done 옳은 식별자 
+ex) 10time  get-next-char  옳지 않은 식별자( 숫자가 맨 앞, 들어올 수 없는 문자가 들어감)
+그리고 C는 대문자와 소문자가 구별이 된다 그래서 아래는 모두 다른 식별자이다
+ex) job joB jOb jOB Job JoB JOB JoB
+C프로그래머가 식별자 이름을 지을때 관례가 있는데 하나는 _로 구분을 하는것이다
+ex) symbol_table current_page name_and_address(스네이크 표기법)
+그리고 하나는 대문자로 구분을 하는 것이다
+ex) symbolTable currentPage nameAndAddress(카멜표기법)
+키워드는 식별자의 이름으로 사용할 수 없다 다음은 C에서 사용하는 키워드들인데 식별자로 사용할 수 없다
+
+키워드
+auto	enum	restrict(C99부터)	unsingned	break
+extern	return	void	case	float	short	volatile
+char	for	signed	while	const	goto	sizeof
+_Bool(C99부터)	continue	if	static	_Complex(C99부터)
+default	inline(C99부터)	struct	_Imaginary(C99부터)    do
+int	switch	double	long	typedef	else	register	union
+
+
+C프로그램 배치
+C프로그램은 연속적인 토큰으로 구성되는데 식별자나 키워드는 그 의미를 바꿀 수 없다 
++, - 나 ; 같은 printf함수를 호출하는 코드가 있을 떄 항목은 7개로 나눌 수 있다
+ex) printf - 1번째토큰  ( - 2번째 토큰  "Height : %d\n" - 3번쨰 토큰   , - 4번째 토큰  height - 5번쨰 토큰 ) -6번쨰 토큰 ; - 7번째 토큰
+여기서 1,5번은 식별자이고 3번은 문자열 2,4,6,7은 구두점에 해당된다 토큰들 사이의 공간은 대부분의 경우에는 
+크게 의미가 없다 하지만 가독성을 위해서는 적절한 공간이 필요하다 
+토큰 사이의 스페이스,  탭, 줄바꿈 등을 사용하는 규칙은 프로그램 배치에 아주 중요하다 
+1. 코드를 한줄로 하기가 너무 길어 한줄로 하기 어려우면 여러 라인으로 나눌 수 있다
+2. 토큰 사이의 공간은 가독성에 좋기 때문에 각각 연산 사이에는 공간을 두는것이 좋다 
+3. 들여쓰기는 블럭 공간을 구성하기에 좋다 
+4. 비어있는 줄은 프로그램 구조를 보기 쉽게 만들어준다 
+토큰 내에서 공간을 주면 프로그램 오류를 유발할 수 있다 그리고 문자열 사이에 줄바꿈을 하면 오류가 생긴다
+  
+ 

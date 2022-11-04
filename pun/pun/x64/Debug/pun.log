@@ -1,2 +1,4 @@
 ﻿  pun.c
-  pun.vcxproj -> C:\Users\15U470\Desktop\C\pun\x64\Debug\pun.exe
+C:\Users\15U470\Desktop\C\pun\pun\pun.c(7,13): warning C4101: 'height' :참조되지 않은 지역 변수입니다.
+C:\Users\15U470\Desktop\C\pun\pun\pun.c(7,21): warning C4101: 'length' :참조되지 않은 지역 변수입니다.
+C:\Users\15U470\Desktop\C\pun\pun\pun.c(9): error C4700: 초기화되지 않은 'width' 지역 변수를 사용했습니다.
