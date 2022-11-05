@@ -6,10 +6,17 @@
 int main(void) {
 
 	float fahrenheit, celsius;
+	float a = 1;
+	int b = 10;
+	int c = 0;
+
+	 b = b / 1;
+
+	printf("%d", b);
 	printf("input fahrenheit temperautre : ");
 	scanf_s("%f %f", &fahrenheit , &celsius);
 	celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
-	printf("Celsius equivalent : %15f  %d dsad  \n", celsius);
+	printf("Celsius equivalent : %15f  %f dsad  \n", fahrenheit , celsius);
 
 
 	return 0;
