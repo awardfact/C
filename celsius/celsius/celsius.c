@@ -11,12 +11,14 @@ int main(void) {
 	int c = 0;
 
 	 b = b / 1;
+	 if (c = 0) {
+		 printf("%d", b);
+		 printf("input fahrenheit temperautre : ");
 
-	printf("%d", b);
-	printf("input fahrenheit temperautre : ");
-	scanf_s("%f %f", &fahrenheit , &celsius);
-	celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
-	printf("Celsius equivalent : %15f  %f dsad  \n", fahrenheit , celsius);
+	 }
+	//scanf_s("%f %f", &fahrenheit , &celsius);
+	//celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
+	//printf("Celsius equivalent : %15f  %f dsad  \n", fahrenheit , celsius);
 
 
 	return 0;
