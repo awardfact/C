@@ -12,9 +12,13 @@ int main(void) {
 
 	 b = b / 1;
 	 if (c = 0) {
-		 printf("%d", b);
-		 printf("input fahrenheit temperautre : ");
 
+	 }
+
+	 int i =10; 
+	 while (i > 0); 
+	 {
+		 printf("123\n");
 	 }
 	//scanf_s("%f %f", &fahrenheit , &celsius);
 	//celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
