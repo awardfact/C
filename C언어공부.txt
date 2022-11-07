@@ -818,3 +818,218 @@ integer 타입
 C는 근본적으로 두 종류의 숫자 타입을 제공한다 integer와 floating타입인데 integer타입은 모든 숫자이고 
 floating type은 분수를 가질 수 있다 integer은 signed와 unsinged로 나뉜다 
 가장 왼쪽의 비트는 sign bit이고 이 비트가 0이면 0이거나 양수이고 1이면 음수이다 
+그래서 16bit의 수일떄 가장 큰 수는  011111111111111 이 되고 값은 32767(2의 15승 -1) 이 된다 
+32bit일 때는 01111111111111111111111111111111이 되고 값은 2147483647(2의 31승 -1)이 된다 
+unsinged는 sgin bit를 사용하지 않기 때문에 16bit일 떄 가장 큰 수는 65535(2의 16승 -1)이 되고
+32bit일때 가장 큰 수는 4294967295(2의 32승 -1)이된다 
+기본으로 singend가 붙기 때문에 unsinged를 사용하기 위해서는 unsinged를 선언해줘야 한다 
+unsigned는 시스템 프로그래밍과 기계 어플리케이션에 의존하는 낮은 레벨에서 유용하다 
+C언어에서 integer자료형은 다른 크기를 가진다 int타입은 보통 32비트이지만 오래된 CPU에서는 16bit이다
+그리고 int보다 큰 수를 넣기 위해 C는 long자료형을 제공하고 메모리를 보존하기 위해 더 작은 공간인 short자료형을 제공한다
+다음 6개 조합은 다른 자료형을 만든다
+short int   /  unsigned short int   
+int / unsigned int
+long int / unsinged log int
+다르게 조합해도 6개중에 하나의 타입이 된다 
+ex) long signed int 는 long int와 동일하다 그리고 순서도 상관없어서 unsigned short int 와 short unsigned int는 동일하다
+C는 int를 뺴서 축약하는 것을 허용한다  축약해서 사용하는 것이 더 흔하다
+ex) unsigned short int = unsigend short   , log int = long 
+6개의 타입의 범위는 기계마다 다르다 하지만 모든 컴파일러는 short , int ,long은 최소 범위 값을 가져야 하고
+int는 short보다 짧아서 안되고 long은 int보다 짧으면 안된다 하지만 같은 범위는 가질 수 있다 
+
+16bit기계에서 6자료형의 범위는 다음과 같다
+Type 			최소 범위		최대 범위
+short int 			-32,768		32,767
+unsinged sohrt int 	0		65,535
+int			-32,768		32,767
+unsinged int 		0		65.535
+long int 			-2,147,483,648	2,147,483,647
+unsined long int 		0		4,294,967,295
+
+32bit기계에서 6자료형의 범위는 다음과 같다
+Type 			최소 범위		최대 범위
+short int 			-32,768		32,767
+unsinged sohrt int 	0		65,535
+int			-2,147,483,648	2,147,483,647
+unsinged int 		0		4,294,967,295
+long int 			-2,147,483,648	2,147,483,647
+unsined long int 		0		4,294,967,295
+
+최근에 64bit CPU는 더 흔해졌다 64비트 기계에서 범위는 다음과 같다
+Type 			최소 범위		최대 범위
+short int 			-32,768		32,767
+unsinged sohrt int 	0		65,535
+int			-2,147,483,648	2,147,483,647
+unsinged int 		0		4,294,967,295
+long int 			-9,223,372,036,854,775,808	9,223,372,036,854,775,807
+unsined long int 		0		18,446,744,073,709,551,615
+해당 범위가 필수적인 것은 아니고 컴파일러마다 다양하다 자료형의 범위를 결정하는 하나의 방법은 
+<limit.h>헤더에서 정의한것을 따르는 것이다 해당 헤더는 최소값, 최대값 매크로를 정의한다
+
+C99에서 정수형 타입
+C99에서는 두개의 추가 정수형 자료형을 지원한다 
+long long int와 unsinged long long int이다 
+매우 큰 정수형이 필요해지고 64비트 산술 프로세서가 생기면서 해당 자료형이 추가되었다 
+long long자료형은 최소 64비트여야 한다 보통 크기는 -2의 63승에서 2의 63승 -1이다
+unsigned long long int의 범위는 보통 0에서 2의 64승 -1이된다
+short, int, long,long long은 C99에서 기본 signed 정수 자료형이라고 부른다
+unsigned short , unsigned int, unsigned long , unsigned long long은 기본 unsigend 정수 자료형으로 불린다 
+또한 C99는 signed와 unsigend에 대해 확장된 정수 자료형을 지원한다 컴파일러는 128bit의 자료형도 지원이 가능하다 
+
+정수형 상수(integer constant)
+C는 정수형 상수로 10진수 ,8진수,16진수를 허용한다 
+
+10진수 상수는 0~9의 숫자로 이루어지고 0으로 시작해서는 안된다 
+ex) 15 255 32767
+8진수 상수는 0~7의 숫자로 이루어지고 0으로 시작한다
+ex) 017 0377 07777
+166진수 상수는 0~9의 숫자, a부터 f까지의 문자로 이루어지고 0x로 시작한다
+ex) 0xf 0xff 0x7fff
+해당 진수는 숫자를 쓰는 방식일 뿐 실제로 저장되는 것과는 관련이 없다 정수는 항상 2진수로 들어간다 
+진수는 섞어서도 사용이 가능하다
+ex) 10 + 015 + 0x20   
+8진수와 16진수는 낮은 레벨 프로그램에 편리하다 
+10진수 상수의 타입은 보통 int이지만 숫자가 너무 크면 long int이다 더 숫자가 크면 unsinged long int까지된다
+8진수와 16진수는 조금 다르다 적절한 자료형을 찾을 떄까지 int, unsigend int , long int , unsined long int를 
+확인한다 컴파일러가 상수를 long으로 보게 하려면 끝에 L을 붙이면 된다
+ex) 15L  0377L  0x7ffffL
+상수가 unsigned를 나타내기 위해서는 U를 끝에 붙인다
+ex) 15U 0377U 0x7ffffU
+long과 unsigend를 동시에 나타내려면 U와 L을 같이 붙인다
+ex) 0xffffffUL
+
+C99에서 정수형 상수 
+C99에서는 LL을 붙여서 long long 자료형이 되게 할 수 있다 U를LL 앞에 붙이면 unsigend long long int를 만들 수 있다
+C99에서 자료형을 결정하는 방식은 조금 다르다 10진수 값을 나타낼 수 있는 자료형 중 가장 작은 자료형이 타입이 된다
+8진수와 16진수는 int , unsigned int , long int , unsigned long int, long long int , unsigned long long int순서대로
+가능한 자료형이 들어간다 
+상수의 끝에 U가 붙으면 unsinged자료형 중에 하나가 된다 L이 붙으면 long이상의 자료형이 된다 
+
+정수 오버플로우(integer overflow)
+정수의 연산이 수행됐을 때 나타낼 수 있는 범위보다 큰 숫자가 나오는 경우가 있다 
+int자료형끼리 연산을 하면 결과도 int로 나타나야 한다 나타낼 수 없다면 오버플로우가 발생한다 
+오버플로우가 발생했을 때 피연산자가 singed인지 unsigned인지에 따라 달라진다 
+sigend연산에서 오버플로우가 발생하면 프로그램은 undefined가 된다 undefined행동은 다양하다 
+계산이 잘못되었거나 프로그램이 파괴되어 의도하지 않은 행동을 해도 발생한다
+unsigned 정수형에서 오버플로우가 발생하면 결과는 defined가 된다 2제곱의 수를 얻는데  
+제곱 수는 결과를 저장하는데 사용된 비트의 숫자이다 예를 들어 65535에 1을 더하면 0이된다 
+
+정수 읽고 쓰기
+오버플로우가 발생해서 프로그램이 동작하지 않으면 먼저 int를 long int로 바꿔야 한다 또한 바꿨을 때 
+영향을 주는 것들도 바꿔야 한다 특히 printf와 scanf를 확인해야 한다 %d는 int타입에서만 동작하기 떄문에 바꿔야 한다
+unsigned int를 읽을 때 d대신 u, o , x를 사용해야 한다
+u는 10진수로 수를 읽고 o는 8진수로 수를 읽고 x는 16진수로 읽는다  
+ex) unsigned int u;  scanf("%u", &u);  (10진수로 읽음) printf("%u", u); (10진수로 출력
+scanf("%o", &u); (8진수로 읽음 )   printf("%o", u); (8진수로 출력)   scanf("%x", &u) (16진수로 읽음) printf("%x",u); (16진수로 출력)
+short자료형을 읽을 때 h를 d,o,u,x앞에 붙여야 한다
+ex) short s; scanf("%hd", &s);  printf("%hd", s);
+long을 읽을 때 l을 d,o,u,x앞에 붙여야 한다 
+ex) long s; scanf("%ld", &s);  printf("%ld", s);
+
+실수형 타입(floating type)
+정수형 자료형이 모든 어플에 맞지는 않다 때때로 소수점을 사용하거나 아주 크거나 아주 작은 변수를 사용해야 한다 
+이런 숫자들은 부동 소수점 형식으로 저장된다 C는 3가지의 실수형 타입을 제공한다 
+float   -  단일 정밀도 부동소수점
+double -  배정밀도 부동소수점
+long double -확장 정밀도 부동소수점
+float는 정밀도가 중요하지 않을 떄 사용한다 double은 대부분 프로그램에 충분한 좋은 정밀도를 제공한다 
+확장 정밀도는 엉청난 정밀도를 제공하지만 거의사용하지 않는다 
+이것들이 얼마나 정확한지 C표준은 제공하지 않는데 컴퓨터들이 다른 방식으로 부동소수점을 저장하기 떄문이다 
+대부분 현대 컴퓨터는 IEEE standard 754를 사용하고 있다 
+IEEE 표준에 따른 실수형 타입의 범위는 다음과 같다
+타입		최소 범위				최대 범위				정밀도
+float		1.17549*10의 마이너스 38제곱        3.40282 * 10의 38제곱		6자리
+double		2.22507*10이ㅡ 마이너스 308제곱	1.79769 * 10의 308제곱		15자리
+long double은 나타나지 않는데 기계마다 다르기 떄문이다
+IEEE표준을 따르지 않는 컴퓨터에게는 위 표는 유효하지 않다 일부 컴퓨터에서는 float 와 double이 같고
+double이 long double이 같다 <float.h>헤더에서 실수형 자료형의 특징 매크로를 찾을 수 있다
+C99에서 실수형은 두 카테고리로 나뉘는데  float, double , long double이 하나로 묶이고 real floating이라고 불린다
+하나는 complex type이다 float_Complex double_Complex long double_Complex가 C99에서 추가되었다 
+
+실수형 상수(Floating Constant)
+실수형 상수는 다양한 방법으로 쓰인다 다음은 57을 다양한 방법으로 쓴 예이다
+ex) 57.0 57. 57.0e0  57E0   5.7e1   5.7+e1  .57e2   570.e-1
+실수형 상수는 반드시 소수점이나 지수를 포함해야 한다 지수는 10제곱형태로 나타난다
+지수가 있으면 반드시 E를 쓰고 +나 -는 e다음에 써야한다 
+실수형 상수는 기본으로 double로 저장된다 필요하면 float로 변환하기 때문에 문제가 생기지 않는다 
+강제로 float나 long double형태로 만들 필요가 있을 수 있는데 
+float형태로 바꾸려면 끝에F를 , long double형태로 바꾸려면 끝에 l을 붙이면 된다 
+ex) 57.0F     57.0L
+C99에서는 실수형 상수를 16진수로 쓰는 것을 제공하는데 0X로 시작을 하면된다 거의 사용되지는 않는다 
+
+실수형 숫자 읽고 쓰기 
+%e  %f   %g는 float를 읽고 쓰는데에 사용된다 double형과 long double형은 조금 다르다 
+double을 읽을 떄는 l을 e,f,g,앞에 놓는다
+ex) double d; scanf("%lf", &d);  l은 오직 scanf에서만 사용하고 printf에서는 사용하지 않는다 
+%e ,   %f  , %g는	float와 double에 둘다 사용이 가능하다 C99에서는 %le %lf %lg를 사용가능하게 했지만 효과는 없다
+long double을 읽을 떄는 L을 e, f, g, 앞에 붙인다
+ex) long double ld;  scanf("%LF", &ld); printf("%LF", ld);
+
+문자 타입( Character Types)
+문자 타입은 char만 존재한다 char는 컴퓨터마다 다양하게 나타날 수 있다 기계마다 문자셋이 다르기 때문이다
+현제 가장 유명한 문자셋은 아스키이다(american standard code for information interchange)
+128문자를 나타낼 수 있는 7bit코드이다 아스키 코드는 더 많은 문자를 표현하기 위해 종종 확장된다
+char자료형은 단일 문자를 할당받는다
+ex) char ch;  ch = 'A'; ch = 'A' ch = '0'  ch = ' ';
+char는 큰따옴표가 아니라 작은따옴표로 묶인다
+
+문자 연산(Operations on Characters)
+C에서 문자가 동작하는것은 간단한데 C에서는 문자를 작은 정수로 다룬다 문자는 2진수로 인코딩된다
+아스키코드에서 문자 코드의 범위는 0000000부터 111111이다 이것을 숫자로 생각하면 0부터 127이된다
+a는 97 A는 65 0은 48로 매칭이 된다 문자와 숫자의 연관성이 아주 강해서 문자는 char보다 int를 가진다
+문자가 연산할 떄 C언어는 단순히 그것을 정수로 사용한다 
+ex) char ch; int i;  i = 'a';(i = 97)  ch = 65(ch = A);  ch= ch + 1(ch = B); ch++;(ch = C)
+문자는 숫자처럼 비교도 가능하다 
+ex) if('a' <=ch && ch <= 'z') ch = ch - 'a' + 'A';
+이러한 값들은 문자셋에 의존한다 그래서 문자 비교는 휴대성이 좋지는 않다 문자를 숫자로 처리하는것은
+여러 이점이 있다 반면에 문자를 숫자로 처리하는것은 컴파일러가 잡지 못하는 다양한 에러가 
+발생할 수 있다 또한 문자셋에 의존하기 때문에  휴대성을 방해할 수 있다 
+
+signed, unsigned 문자
+C에서는 문자를 정수로 사용하기 떄문에 char도 int처럼 singed와 unsigend가 존재한다 
+signed char는 -128부터 127이고  unsigend char는 0부터 255의 값을 가진다
+C표준에서는 평범한 char가 signed인지 unsigned인지 명시하지 않는다 
+몇몇 컴파일러는 signed가 기본이고 다른 몇몇은 unsigned가 기본이다 
+하지만 대부분의 경우 signed인지 unsigned인지 신경쓸 필요가 없다 
+만약 char를 작은 정수로 사용하고 있다면 신경써야 하기때문에 C에서는 char에 signed와 unsigned를 허용한다
+이것을 신경쓰는 사람은 char앞에 signed와 unsgined를 붙이면 된다 
+C89에서는 char를 정수 자료형이라고 한다 열거형 자료형 또한 정수형 자료형이다
+C99에서는 정수형 자료형이라고 하지는 않지만 문자와 열거형 , _Bool자료형도 정수 자료형이라고 한다
+
+산술 타입(Arithmetic Types)
+정수형과 실수형은 통합적으로 산술 타입으로 알려져 있다 
+C89에서 나눈 산술 타입의 카테고리는 다음과 같다
+Integer type
+ - char
+ -signed integer types(signed char short int , int , long int)
+ - unsigned integr types(unsigned char , unsigned short int , unsigned int , unsigned long int)
+ - Enumerated types 
+Floating types (float, double, long double)
+C99는 산술타입을 더 복잡하게 나눈다
+Integer type
+ - char
+ -signed integer types , both stanard(signed char short int , int , long int , long long int) , and extended
+ - unsigned integr types , both standard(unsigned char , unsigned short int , unsigned int , unsigned long int, unsigned long long int , _Bool) , and extended
+ - Enumerated types 
+Floating types 
+ - real floating types((float, double, long double)
+ - complex types( float_Complex, double_Complex , long double_Complex)
+
+확장 비트열(escape sequences)
+문자 상수는 보통 작은 따옴표로 묶인 하나의 문자이다 하지만 새로운 라인 등 이런 방식으로 쓰이지 않는 특별한
+문자가 있다 이것들은 키보드로 입력받을 수 없고 보이지 않는다 프로그램이 모든 문자를 다룰 수 있게 C는
+확장열을 제공한다 확장열은 character escpaes와 numeric escape가 있다 
+이름		확장열
+Alert(bell) 	\a
+Backspace	\b
+Form feed	\f
+new line		\n
+Carriage return 	\r
+Horizontal tab	\t
+Vertical tab	\v
+Backslash		\\
+Question mark	\?
+sing quote	\'
+double quote	\"
+\a, \b, \f, \r, \t, \v는 일반적인 아스키 제어 문자이다 \n은 아스키 line-feed문자이다 \\는 
+\문자를 포함할 수 있도록 해준다 \' \"도 '와 "문자를 포함할 수 있게 한다 
