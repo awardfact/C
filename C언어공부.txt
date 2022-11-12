@@ -1805,3 +1805,18 @@ ex) int *max(int *a , *b); {if(*a > *b){ return a;  else return b; 함수를 호
 ex) int * p , i, j;  p = max(&i, &j);   함수 호출 후 p포인터는 i또는 j를 가리킬 것이다
 
 해당 함수가 전달된 인수중 하나를 가리키지만 외부 변수나 static으로 선언된 지역 변수도 반환이 가능하다 
+절대 자동 지역 변수를 포인터로 반환하면 안된다
+ex) inf *f(void){ int i; ... return &i;} 변수 i는 f가 반환디면 존재하지 않고 그렇기 떄문에 i를 가리키는 포인터는 유효하지 않다
+포인터는 배열 요소도 가리킬 수 있다 a가 배열이면 &a[i]는 a의 요소 i에 대한 포인터이다 함수가 배열 인수를 가졌을 떄
+배열중 하나의 요소를 반환하는 함수는 유용하다 
+ex) int  *find_middle(int a[], int n){  return &a[n/2]; }
+포인터는 보통 항상 같은 주소를 나타내지만 컴퓨터에 따라 다르다 
+*는 사용되는 맥락에 따라서 다양한 의미를 가진다 
+ex) int *p = &i 여기서 *는 간접 연산자가 아니라 포인터를 알려주는 기호이다 
+파라미터가 const로 된 포인터 변수인 경우 포인터가 가리키는 변수를 변경시킬 수 없지만 포인터 자체는 변경할 수 있다
+ex) void f(const int *p) { int j; *p = 0;  <-잘못됨    p = &j  <-  정상코드
+
+chap12 Pointers and Arrays
+
+포인터 연산 (Pointer Arithmetic)
+int a[10] , *p;  p = &a[0];  다음과 같이 하면 p가 a[0]을 가리킨다 
