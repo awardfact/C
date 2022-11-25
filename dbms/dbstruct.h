@@ -30,7 +30,7 @@ struct db {
 };
 
 //테이블 구조체
-struct talbe {
+struct table {
 	char name[100];
 	struct field* field;
 	struct table* before;

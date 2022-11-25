@@ -47,15 +47,17 @@ struct db {
 }
 
 
-struct talbe{
-  char[100] name;
-  struct table *before;
-  struct table *after;
-  struct field*firstData
-  struct field*currentData;
-  struct field*nextData;
+//테이블 구조체
+struct talbe {
+	char name[100];
+	struct field* field;
+	struct table* before;
+	struct table* after;
+	struct tuple* firstData;
+	struct tuple* currentData;
+	struct tuple* nextData;
 
-}
+};
 
 struct tuple{
 //  char[100] name;
@@ -287,4 +289,8 @@ int getOrder(char order[] );    //
 3. 임시 저장 문자 변수가 CREATE or  DROP or INSERT or SELECT등이 되면 분기 
 
 
+test
+qawsed
+use db db1
+create table tb1(f1 char, f2 int , f3 float)
 

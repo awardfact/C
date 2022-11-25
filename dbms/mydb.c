@@ -13,6 +13,7 @@
 #include "dborder.h"
 #include "dbdb.h"
 #include "dbtable.h"
+#include "dbfree.h"
 
 int userCount;
 
@@ -42,7 +43,7 @@ struct tuple* lastTuple = NULL;
 
 
 //필드 전역변수 
-struct field* tmpFieldd = NULL;  // 임시로 필드를 다룰 때 사용하는 필드
+struct field* tmpField = NULL;  // 임시로 필드를 다룰 때 사용하는 필드
 struct field* firstField = NULL;  // 선택한 테이블의 첫번째 필드
 struct field* lastField = NULL;  // 선택한 테이블의 마지막 필드 
 struct field* selectedField = NULL; // 현재 선택중인 필드 (사용할지는 모르겠음)
@@ -106,7 +107,6 @@ int main(int argc, char* argv[])
 
 					}
 
-
 				}
 				//2를 입력했으면 회원가입 화면으로 이동 
 				else if (getKey == 50) {
@@ -134,9 +134,6 @@ int main(int argc, char* argv[])
 						strcpy(mainMsg, "sign out fail.\0");
 						getKey = '\0';
 					}
-
-
-
 
 				}
 
@@ -207,7 +204,7 @@ int main(int argc, char* argv[])
 				}
 				else if (getKey == 49) {
 
-					tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable);
+					tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable , &lastField , &tmpField);
 					if (tmp == 0) {
 						strcpy(mainMsg, "order process fail \0");
 

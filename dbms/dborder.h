@@ -4,13 +4,12 @@
 
 // 명령을 공백으로 분리하는 함수 where이 2개까지 올 수 있어서 where절의 괄호는 의미가 없기 떄문에
 //괄호가 오는것은 INSERT문과 CREATE문이라고 생각하면 되기 때문에 괄호가 나오기 전까지는 공백으로 분리하고 괄호가 나오면 
-char* divide(char msg[] , struct dividedMsg** dorderF , struct dividedMsg** dorderL, struct dividedMsg** dorderT) {
+void divide(char msg[] , char msgTmp[] , struct dividedMsg** dorderF , struct dividedMsg** dorderL, struct dividedMsg** dorderT) {
 
 	char tmp[100] = "\0";
 	char tmp2[2] = "\0";
 	int i = 0;
 	int isOpen = 0;
-	char msgTmp[1000];
 	int j = 0;
 	int beforeMsg = 0;
 
@@ -106,7 +105,7 @@ char* divide(char msg[] , struct dividedMsg** dorderF , struct dividedMsg** dord
 	}
 
 	msgTmp[j] = '\0';
-	return msgTmp;
+
 
 }
 
@@ -134,7 +133,7 @@ char* divide(char msg[] , struct dividedMsg** dorderF , struct dividedMsg** dord
 // 사용자가 명령어를 입력하는 함수 
 int userOrder(struct user** selectedUser , struct db** tmpDb , struct db** firstDb , struct db** lastDb , struct db** selectedDb , struct table** firstTable , struct table** lastTable , struct table** tmpTable) {
 	char order[1000];
-
+	char tmpOrder[1000];
 	struct dividedMsg* dorderF = NULL;
 	struct dividedMsg* dorderL = NULL;
 	struct dividedMsg* dorderT = NULL;
@@ -147,7 +146,7 @@ int userOrder(struct user** selectedUser , struct db** tmpDb , struct db** first
 	//입력을 받고 입력 받은 값을 공백으로 분리 
 	scanf("%[^\n]s", order);
 	// printf("%s \n", order);
-	divide(order, &dorderF, &dorderL , &dorderT);
+	divide(order, tmpOrder ,  &dorderF, &dorderL , &dorderT);
 
 	(*tmpDb) = NULL;
 
@@ -180,8 +179,7 @@ int userOrder(struct user** selectedUser , struct db** tmpDb , struct db** first
 
 
 // 데이터베이스 명령어 입력하는 함수 
-int dbOrder(struct user** selectedUser ,struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable) {
-
+int dbOrder(struct user** selectedUser ,struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable  , struct field** lastField , struct field** tmpField) {
 
 	char order[1000];
 
@@ -199,7 +197,7 @@ int dbOrder(struct user** selectedUser ,struct db** selectedDb, struct table** f
 	//입력을 받고 입력 받은 값을 공백으로 분리 
 	scanf("%[^\n]s", order);
 	// printf("%s \n", order);
-	tmpOrder = divide(order, &dorderF, &dorderL, &dorderT);
+	 divide(order , tmpOrder, &dorderF, &dorderL, &dorderT);
 
 	(*tmpTable) = NULL;
 
@@ -207,7 +205,7 @@ int dbOrder(struct user** selectedUser ,struct db** selectedDb, struct table** f
 	if (strcmp(dorderF->msg, "CREATE") == 0 || strcmp(dorderF->msg, "create") == 0) {
 
 
-		return createTable(&dorderF, tmpOrder, selectedUser, selectedDb, firstTable, lastTable, tmpTable);
+		return createTable(&dorderF, tmpOrder, selectedUser, selectedDb, firstTable, lastTable, tmpTable  , lastField , tmpField);
 	}
 	else {
 

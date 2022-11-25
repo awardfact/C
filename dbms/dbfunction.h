@@ -17,9 +17,9 @@ int openCheck(char msg[], char tmp[], char tmp2[]); // 시작괄호 체크하는 함수
 
 
 //dborder 헤더 함수 
-char* divide(char msg[], struct dividedMsg** dorderF, struct dividedMsg** dorderL, struct dividedMsg** dorderT);  // 명령을 받아서 명령을 공백으로 나누는 함수 
+void divide(char msg[] , char msgTmp[], struct dividedMsg** dorderF, struct dividedMsg** dorderL, struct dividedMsg** dorderT);  // 명령을 받아서 명령을 공백으로 나누는 함수 
 int userOrder(struct user** selectedUser, struct db** tmpDb, struct db** firstDb, struct db** lastDb, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable);  // 로그인 상태에서 데이터베이스 명령어 사용 함수   CREATE , DROP   ->database 
-int dbOrder(struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable); // db명령 함수 
+int dbOrder(struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** lastField, struct field** tmpField); // db명령 함수 
 //dborder 헤더 함수 
 
 
@@ -47,12 +47,14 @@ void getDb(struct user** tmpUser);  //유저들의 디비 정보를 가져오는 함수
 
 
 //dbTable헤더 함수 
-int createTable(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable);//CREATE TABLE 테이블이름 (필드이름1 타입이름, 필드이릅2 타입이름2 .....);
+int createTable(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** lastField, struct field** tmpField);//CREATE TABLE 테이블이름 (필드이름1 타입이름, 필드이릅2 타입이름2 .....);
 //dbTable헤더 함수 
 
 
 
-
+//dbfree 헤더 함수 
+void freeField(struct field** freeField);
+//dbfree 헤더 함수 
 
 
 
