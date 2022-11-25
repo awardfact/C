@@ -1,0 +1,55 @@
+서버의 소켓 -> 3
+
+
+클라이언트1 개별 소켓 -> 4 
+클라이언트2 개별 소켓 -> 5 
+클라이언트3 개별 소켓 -> 6 
+
+
+4가-> 3소켓으로 데이터 보냄
+
+서버는 4가 3소켓으로 보낸 데이터를 4로 받음
+
+서버가 4로 받은 데이터를 클라이언트 1에게 4소켓으로 보내면 보내짐 
+
+서버가 4에게 받은 데이터를 모든 클라이언트에게 보내려면
+1. 데이터를 받으면 함수를 호출해서 접속중인 클라이언트에게 하나하나씩 데이터를 보냄 
+(서버가 접속중인 클라이언트에게 한방에 보내는 방법이 없을 때)
+
+
+
+
+
+
+
+연결리스트
+
+필요한 데이터와 이전 이후를 가리키는 해당 구조체 포인터를 가진 구조체 생성
+구조체 포인터 변수 생성
+구조체 처음 가리키는 변수 생성 
+p = null; 처음에는 데이터 없어서 널
+
+처음 가리키는 포인터가 널이면 처음가리키는 구조체 = p
+할당받는 변수 =구조체 크기 메모리 할당 
+할당받은 변수 구조체.전  =   next포인터 있는경우 
+할당받은 변수 구초제.후 =  NULL
+이전 구조체.후 =  p
+
+할당받은 구조체 해제 
+현재 구초제가 NULL이 아닌 경우 
+이전 구조체의 next는 다음 구조체
+다음 구조체 befoe은 이전 구조체 
+현재 구조체 free
+현재 구조체 = 다음 구조체 
+ 
+
+
+https://www.mongodb.com/docs/drivers/c/
+
+
+
+bson_error_t error;
+client = mongoc_client_new ("mongodb+srv://awardfact:<password>@chatting.zo1c6o4.mongodb.net/?retryWrites=true&w=majority");
+api = mongoc_server_api_new (MONGOC_SERVER_API_V1);
+mongoc_client_set_server_api (client, api, &error);
+db = mongoc_client_get_database (client, "test");

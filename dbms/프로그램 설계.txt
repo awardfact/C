@@ -1,0 +1,290 @@
+Mysql C로 만들어보기
+
+연결리스트로
+{
+USER
+DB
+TB
+Col 
+Data
+}
+↓
+쿼리
+Create, Drop
+Insert, delete, select, update
+and, or, ==, !=, <, >
+Gruop by
+↓
+파일
+
+구조체
+user구조체, db구조체, table구조체 , data구조체를 만듬 
+user를 만들면 user구조체가 생성되고 
+db를 만들면 현재 user의 db가 생성되고 
+table을 만들면 현재 db의 table이 생성되고 
+field를 만들면 현재 table의 field가 생성되고
+data를 만들면 현재 field의 data가 생성
+
+struct user
+{
+  char[100] id;
+  char[100] password;
+  struct user *before;
+  struct user *after;
+  struct table *firsDB;
+  struct table *currentDB;
+  struct table *nextDB;
+};
+
+
+struct db {
+   char[100] name;
+   struct db *before;
+   struct db *after;
+   struct table *firstTable;
+   struct table *currentTable;
+   struct table *nextTable;
+}
+
+
+struct talbe{
+  char[100] name;
+  struct table *before;
+  struct table *after;
+  struct field*firstData
+  struct field*currentData;
+  struct field*nextData;
+
+}
+
+struct tuple{
+//  char[100] name;
+//  char[20] dataType;
+  struct field *field;
+  struct data *data;
+  struct field*before;
+  struct field*after;
+//   struct data *firstData
+//  struct data *currentData;
+//  struct data *nextData;
+}
+
+struct field{
+   char[100] name;
+  char[20] dataType;
+  struct field *before;
+  struct field *after;
+}
+
+struct data{
+   void *data;
+  struct data *before;
+  struct data *after;
+}
+
+struct dividedMsg{
+    char[100];
+    struct dividedMsg *after;
+}
+
+
+전역변수 
+ 사용자 전역변수 
+  struct user *tmpUser;  // 임시로 user를 다룰 때 사용하는 임시 user변수
+  struct user *firstUser;  // 첫번쨰 user를 가리키는 user포인터
+  struct user *lastUserr;   // 현재 user를 가리키는 user포인터(가장 마지막에 생성된 user)
+  struct user *selectUser;   // 현재 접속중인 user를 가리키는 user 포인터 
+ DB전역변수
+  struct db *tmpDb // 임시로 db를 다룰 때 사용하는 임시 db포인터변수
+  struct db *firstDb  // 현재 유저가 가지고 있는 첫번쨰 db  로그인중이 아니라면 null   user의 firstDb가 이것이 된다
+  struct db *lastDb // 현재 유저가 가지고 있는 마지막 db 로그인이 아니면 null user의 firstDb의 before가 있으면 그것이 되고    없다면 fristDb도 없으면 null
+  struct db *selectDb   //현재 유저가 선택한 db
+ Table 전역변수  
+  struct table *tmpTable; // 임시로 테이블을 다룰 때 사용하는 테이블포인터변수  
+  struct table *firstTable; //  DB를 선택했을 때 DB의 첫번째 테이블 
+  struct table *lastTable;  // DB를 선택했을 때 DB의 마지막 테이블 
+  struct talbe *selectTable;   //  현재 선택중인 테이블 
+ field 전역변수 (속성)  
+  struct field *tmpFieldd;  // 임시로 필드를 다룰 때 사용하는 필드
+  struct field *firstTable;  // 선택한 테이블의 첫번째 필드
+  struct field *lastField;  // 선택한 테이블의 마지막 필드 
+  struct field *selectField; // 현재 선택중인 필드 (사용할지는 모르겠음)
+ data전역변수( 튜플)
+  struct data *tmpData  // 임시로 데이터를 다룰 때 사용하는 데이터
+  struct data *firstData // 현재 튜플의 첫 데이터 
+  struct data *lastData // 현재 튜플의 마지막 데이터 
+
+함수
+
+
+int getch(void);    // 입력받고 엔터를 누르지 않고 입력받은 값을 뽑아오는 함수 윈도우에서는 헤더를 하면 되는데 리눅스는 없어서 직접 함수를 작성해야 한다 
+
+
+
+void or strct dividedMsg* divide(char msg[]);
+문자열 공백으로 나누는 함수 반복문을 돌면서 공백이 나오기 전의 문자를 임시 배열에 넣고 공백이 나오면 divdeMsg에 추가
+
+
+addUser(char id[] , char password[] );    //아이디와 패스워드를 받고 계정을 생성하는 함수
+ struct user메모리 할당 user->id 는 받은 아이디 password는 받은 패스워드 나머지는 다 null인데 전역 current있으면 그걸 before로 
+ 전역변수의 User가 있으면 전역 Current를 만든 user로 before는 기존 current  next는 null로 변경
+
+deleteUser(struct user *deleteUser); // 사용자를 삭제하는 함수 
+ 전역변수의 클라이언트와 관련이 있으면 전역변수를 바꿔줌
+ 해당 유저의 before과 after를 연결시켜줌
+ 메모리 할당 해제 (firstDb부터 끝까지 while계속 돌면서 할당 해제) 후 유저 할당 해제 
+
+
+addTable()   // 테이블 추가 함수 
+deleteTable()  // 테이블 삭제 함수 
+addTuple()  // 튜플 추가 함수 
+deleteTuple()  // 튜플 삭제 함수 
+
+
+int login(char id[] , char password[]);   // 로그인하는 함수 
+ 유저아이디에 입력한 아이디가 있는지 체크 (없으면 리턴 0)
+ 있는경우 패스워드가 입력한거와 맞는지 체크(아니면 리턴 0 , 맞으면 리턴 1)
+
+
+int logout(void);  // 로그아웃하는 함수 
+ currentUser이런것들 초기화시켜줌 
+ 리턴 
+
+int userOrder(char order[]);   // 로그인 상태에서 데이터베이스 명령어 사용 함수   CREATE , DROP   ->database 
+ 임시 문자 넣을 char배열변수 선언 ,  받은값을 처음부터 반복 돌려서 공백이 나오면 초기화되고 아니면 문장을 추가함
+ 임수 문자가  명령문인 경우 명령 함수로 분기 (CREATE, DROP, USE ) 끝까지 명령어가 안나오면 return 0;
+ 함수 호출해서 받은 값이 1이면 디비 생성 2면 디비 삭제 3이면 디비 사용인데 여기서 받은값을 그대로 리턴핝다 
+
+int createDb(char order[]);  // 디비 생성 함수
+ 임시 문자 넣을 char배열변수 선언 ,  받은값을 처음부터 반복 돌려서 공백이 나오면 초기화되고 아니면 문장을 추가함
+ database가나오면 그 뒤에 나오는 데이터베이스 이름을 가지고 addDb함수 호출  성공하면 1 리턴 
+
+
+int dropDb(char order[]);   // 디비 삭제함수
+ 임시 문자 넣을 char배열변수 선언 ,  받은값을 처음부터 반복 돌려서 공백이 나오면 초기화되고 아니면 문장을 추가함
+ database가나오면 그 뒤에 나오는 데이터베이스 이름을 가지고 deleteDb함수 호출 성공하면 2 리턴
+
+int useDb(char order[]);  // 디비 사용 함수 
+ 임시 문자 넣을 char배열변수 선언 ,  받은값을 처음부터 반복 돌려서 공백이 나오면 그 전에 저장했던 배열 가지고
+ 디비에 같은 이름이 있는지 체크한다 있으면 db전역변수 값들을수정해주고 3을 리턴 실패하면 0 리턴한다 
+
+int nuseDb();  // 디비 사용 종료 함수 
+ 디비 관련 전역변수들 초기화 성공하면 리턴 1 아니면 리턴 0
+
+
+int dbOrder(); // 디비 명령어 사용 함수 
+나눈 문자의 처음이 INSERT UPDATE SELECT DELETE CREATE DROP인경우로 분기 
+
+
+
+int createTable(struct dividedMsg*);  //CREATE TABLE 테이블이름 (필드이름1 타입이름, 필드이릅2 타입이름2 .....);
+테이블을 생성하는 함수 메모리 할당하고 필드 넣고 테이블 전역변수 위치 조정해줌 
+
+int dropTable(struct dividedMsg*);  //DROP TABLE 테이블이름;
+테이블을 삭제하는 함수 테이블 이름을 찾아서 맞는 이름이면 테이블 메모리 해제, 전역변수 조정 
+
+// INSERT INTO 테이블이름(필드이름1, 필드이름2, 필드이름3 ...)VALUES(데이터값1,데이터값2,데이터값3....)
+// INSERT INTO 테이블이름VALUES(데이터값1, 데이터값2,데이터값3.....)
+int insertTable(struct dividedMsg*);
+insert는 테이블 이름 뒤에 오는 값에 따라 분기를 해야한다 VALUE값이 나오면 순서대로 넣고
+필드가 나오면 필드 배열에 넣고 값 배열에 넣어서 필드 값 맞춰서 넣는다 
+
+//UPDATE 테이블이름 SET 필드이름1=데이터값1, 필드이름2=데이터값2..... where 조건
+int updateTable(struct divideMsg*);
+필드이름과 데이터값을 배열에 넣고   조건이 있으면 조건에 맞는지 필드를 돌고 맞으면 다시 돌아서 데이터 수정
+
+//DELETE FROM 테이블이름 where 조건
+int deleteTable(struct divideMsg*);
+해당 테이블의 튜플을 돌면서 조건에 맞는 튜플이 있으면 위치조정하고 메모리 할당 해제 
+
+//SELECT 필드이름1 , 필드이름2 .... from 테이블이름 where 조건  group by 필드
+int selectTable(struct divideMsg*);
+처음에 그룹바이가 있는지 체크하고 있으면 조건에 맞는 튜플이 있으면 그 필드로 묶고 
+없으면 조건에 맞는 튜플이 있으면 출력 
+
+
+필드 데이터
+테이블의 필드는 1~N개
+테이블의 튜플 개수는 N개  튜플의 데이터 개수는 필드 개수 
+
+
+
+select 컬럼순서 컬럼 용도 
+select 용도 컬럼순서 
+
+지역 변수 
+아이디 변수
+패스워드 변수
+패드워드 재입력 변수 
+화면 변수 0이면 메인 1이면 로그인 2면 디비 
+
+
+
+시작 
+
+while
+
+메인화면 
+종료 0  ,   로그인 1 , 회원가입 2 
+종료 ->  프로그램 종료
+회원가입 ->  아이디 입력  ,  패스워드 입력  , 패스워드 재입력 (한줄로 띄어쓰기 구분)   -> addUser 함수 호출 (여기서 링크드리스트 검색하면서 같은 아이디가 없으면 추가)  성공하면 메인 화면으로 이동 
+로그인 -> 아이디 입력 , 패스워드 입력  ->login함수 호출  실패하면 메인화면 이동 성공하면 성공화면 이동
+
+로그인(성공) 화면
+0입력 -> 프로그램 종료 ㅠ
+1입력 -> 디비 명령 입력    -> 입력 받은 문자열을 가지고 userOrder함수 호출 
+dbOrder함수에서 명령어를 인식한경우 명령어 함수 호출
+0을 리턴받은 경우 - 명령어 실패 -> 로그인(성공)화면
+1을 리턴받은 경우 - 디비 생성 -> 로그인(성공)화면
+2를 리턴받은 경우 - 디비 삭제 -> 로그인(성공)화면
+3을 리턴받은 경우 - 디비 사용 -> 디비 화면
+2입력 -> 로그아웃 ->> 메인화면 이동
+
+디비 화면 
+0입력 -> nuseDb 함수 호출 -> 로그인화면으로 이동 
+1입력 -> 디비 명령 입력 -> 입력받은 문자열을 가지고 dbOrder함수 호출  
+
+    
+
+
+파일
+user파일 -> 아이디와 패스워드가 있는 파일 내용이 있으면 처음에 불러온다 
+user디렉터리 -> 회원별로 디렉토리가 있다 db파일이 있고 db마다 db이름 디렉터리가 있다 
+db디렉터리  -> db별로 디렉터리가 있고 table파일이 있고 db마다 테이블 디렉토리가 있다 
+table디렉터리 -> 필드 파일과 튜플 파일이 있음  
+
+
+
+
+
+
+명령어  
+
+CREATE database 데이터베이스이름 ;  ->데이터베이스이름의 데이터베이스 추가 
+DROP database 데이터베이스 이름;    ->데이터베이스이름의 데이터베이스 삭제 
+CREATE TABLE 테이블이름(필드이름1 타입이름, 필드이릅2 타입이름2 );
+DROP TABLE 테이블이름;
+INSERT INTO 테이블이름(필드이름1, 필드이름2, 필드이름3 ...)VALUES(데이터값1,데이터값2,데이터값3....)
+INSERT INTO 테이블이름VALUES(데이터값1, 데이터값2,데이터값3.....)
+UPDATE 테이블이름 SET 필드이름1=데이터값1, 필드이름2=데이터값2..... where 조건
+DELETE FROM 테이블이름 where 조건
+SELECT 필드이름1 , 필드이름2 .... from 테이블이름 where 조건  group by 필드
+
+// 삭제함수 
+addDb(char dbName[]);   // 디비를 추가하는 함수 
+1. db메모리 할당 dbName은 매개변수로 받은 디비이름 테이블 관련 변수는 null
+1. 전역변수와 selectUser의 db포인터를 통해 들어가야 할 위치 조정해주고 생성한 db before after조정 
+
+deleteDb(struct db *deleteDb);   // 디비를 삭제한는 함수 
+1. 전역변수의 디비와 관련이 있으면 전역변수 수정
+2. 해당 디비의 before과 after수정
+3. 메모리 할당 해제   firstTable부터 반복돌면서 해제하고 해당 db할당 해제
+
+
+int getOrder(char order[] );    // 
+1. 현재 접속중인 아이디 체크 없으면 리턴 -1
+2. 임시 저장 문자 변수 만들고 ( order를 처음부터 탐색할 때 공백이 나오기 전 문자를 넣는 변수  )
+3. 임시 저장 문자 변수가 CREATE or  DROP or INSERT or SELECT등이 되면 분기 
+
+
+

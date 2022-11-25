@@ -1,0 +1,196 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdlib.h>
+#include <pthread.h>
+//#include <winsock.h>
+#include <errno.h>
+//#pragma comment(lib, "ws2_32.lib")
+
+
+
+
+// 쓰레드 인수로 보낼 구조체 
+struct sockS {
+    int sock;
+    int so;
+    pthread_t client;
+    struct sockS* before;
+    struct sockS* next;
+};
+
+
+// 현재 연결중인 
+
+
+pthread_t client[1000];
+
+//처음 가리키는 포인터 
+struct sockS *firstClient = NULL;
+
+// 이전 현재 이후 가리키는 포인터 
+struct sockS* prevClient = NULL;
+struct sockS* currentClient = NULL;
+struct sockS* nextClient = NULL;
+
+    
+
+
+void* connect_client(void* soTmp);
+/*
+소켓 연결   
+1. 소켓 생성
+2. bind
+3. listen
+4. accept 
+5. send / recv
+6. close
+
+*/
+int main(int argc, char* argv[])
+{
+
+
+    //소켓 주소 
+    struct sockaddr_in address;
+
+
+    // 클라이언트 쓰레드 
+
+    // 클라이언트 배열 번호 
+    int client_i = 0;
+    //클라이언트 소켓 번호 
+    int cs = 0;
+    int status;
+
+    // 소켓 주소 크기
+    int addresslen = sizeof(address);
+    //서버  소켓 번호 
+    int sock;
+
+    socklen_t clnt_addr_size;
+
+    // 클라이언트 쓰레드로 보낼 인수 
+
+
+    //ipv4
+    address.sin_family = AF_INET;
+    // 서버 아이피 
+    address.sin_addr.s_addr = inet_addr(argv[1]);
+    //포트번호 
+    address.sin_port = htons(atoi(argv[2]));
+
+    int result;
+
+    // 1.소켓을 만든다 
+    if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+        printf("socket fail.");
+    }
+
+    // 2. bind
+    if (bind(sock, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        printf("bind fail  %d.\n", errno);
+    }
+
+    // 3.listen 
+    if (listen(sock, 5) < 0) {
+        printf("listen fail.");
+    }
+
+    while (1) {
+        // 4. accept
+        if ((so[client_i].so = accept(sock, (struct sockaddr*)&address, &clnt_addr_size)) < 0) {
+            printf("accept");
+        }
+        else {
+            // 클라이언트가 연결하면 쓰레드를 만들고 송수신하는  쓰레드 함수 실행 
+            so[client_i].sock = sock;
+            cs = pthread_create(&client[client_i], NULL, connect_client,&so[client_i]);
+
+        }
+        if (client_i < 1000) {
+            client_i++;
+
+        }
+        else {
+            client_i = 0;
+        }
+    }
+    
+
+    /*
+    
+        while (1) {
+
+
+        result = read(so, buf, 1024);
+        if (result < 1) {
+
+            printf("fail recv\n");
+        }
+        printf("read Data :  %s\n", buf);
+
+    }
+    */
+
+
+    close(sock);
+
+    return 0;
+}
+
+
+// 클라이언트와 송수신하는 쓰레드 함수 
+void *connect_client(void *soTmp) {
+
+    // 인수로 받은 값을 구조체로 변환
+    sockS *sockTmp = (sockS*)soTmp;
+
+    // 서버 소켓 번호와 클라이언트 소켓 번호를 변수에 저장 
+    int sock = sockTmp->sock;
+    int so = sockTmp->so;
+
+
+    printf("sock : %d  and so  : %d \n", sock, so);
+
+    //전송 수신 성공했는지 여부를 받는 변수 선언 
+    int result = 0;
+    int wresult = 0;
+
+    //메시지를 담는 변수 선언 
+    char buf[1024] = "hello Server";
+
+    wresult = write(so, buf, 1024);
+
+    //write(sock, buf, 1024);
+
+    while (1) {
+
+        // 클라이언트에게 메시지를 받음 
+        result = read(so, buf, 1024);
+
+        // 메시지 받는게 실패하면 해당 클라이언트 소켓 종료 
+        if (result < 1) {
+            printf("connect fail ");
+            close(so);
+            break;
+        }
+
+        printf("read Data : %s \n", buf);
+
+
+        //받은 메시지를 클라이언트에게 보냄 
+        wresult = send(so, buf, 1024, 1);
+        if (wresult < 1) {
+            printf("connect fail ");
+            close(so);
+            break;
+        }
+
+    }
+
+
+}
