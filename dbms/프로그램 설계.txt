@@ -266,8 +266,8 @@ CREATE database 데이터베이스이름 ;  ->데이터베이스이름의 데이
 DROP database 데이터베이스 이름;    ->데이터베이스이름의 데이터베이스 삭제 
 CREATE TABLE 테이블이름(필드이름1 타입이름, 필드이릅2 타입이름2 );
 DROP TABLE 테이블이름;
-INSERT INTO 테이블이름(필드이름1, 필드이름2, 필드이름3 ...)VALUES(데이터값1,데이터값2,데이터값3....)
-INSERT INTO 테이블이름VALUES(데이터값1, 데이터값2,데이터값3.....)
+INSERT INTO 테이블이름(필드이름1, 필드이름2, 필드이름3 ...) VALUES (데이터값1,데이터값2,데이터값3....)
+INSERT INTO 테이블이름 VALUES(데이터값1, 데이터값2,데이터값3.....)
 UPDATE 테이블이름 SET 필드이름1=데이터값1, 필드이름2=데이터값2..... where 조건
 DELETE FROM 테이블이름 where 조건
 SELECT 필드이름1 , 필드이름2 .... from 테이블이름 where 조건  group by 필드
@@ -289,8 +289,60 @@ int getOrder(char order[] );    //
 3. 임시 저장 문자 변수가 CREATE or  DROP or INSERT or SELECT등이 되면 분기 
 
 
+
+cd ../
+cd hsj
+cd c
+cd dbms
+gcc mydb.c -o mydb
+
 test
 qawsed
 use db db1
-create table tb1(f1 char, f2 int , f3 float)
+create table tb1(f1 char(20),f2 int(5)NOT NULL,f3 float(4)NULL)
+create table tb2(f1 char(20),f2 int(5) NOT NULL,f3 float(4) NULL)
+create table tb3(f1 char (20),f2 int (5) NOT NULL,f3 float (4) NULL)
+create table tb4( f1 char (20) ,f2 int (5) NOT NULL ,f3 float (4) NULL)
+create table tb5( f1 varchar (20) , f2 int (5) NOT NULL , f3 float (4) NULL)
+create table tb6( f1 char (20) , f2 int (5) NOT NULL , f3 float (4) NULL)
 
+drop table tb1
+drop table tb2
+drop table tb3
+drop table tb4
+drop table tb5
+drop table tb6
+
+
+insert into tb1(f1, f2, f3)VALUES("char" , "1234, 56.78)
+insert into tb1(f2, f3)VALUES(1234, 56.78)
+insert into tb1(f2)VALUES(1234)
+insert into tb1()VALUES()
+insert into tb1(f1, f3)VALUES("char", 56.78)
+
+insert into tb1 VALUES("char" , 1234, 56.78)
+insert into tb1 VALUES("char" , 1234)
+insert into tb1 VALUES("char")
+insert into tb1 VALUES(123123)
+insert into tb1 VALUES(123123)
+
+! -> 33
+< -> 60
+= -> 61
+> -> 62
+where에 나올 수 있는 조건
+= != < <= > >=       and or 
+
+delete from tb1 where f1 != char2  or f2 = 1234
+delete from tb1 where f1 = char2  AND f2 = 1232
+delete from tb1 where f1 > char2  AND f2 < 1234
+
+UPDATE 테이블이름 SET 필드이름1=데이터값1, 필드이름2=데이터값2..... where 조건
+update tb1 set f1 = char10, f2 =1000 , f3 = 121.555  where f1 = char3 AND f2 = 1235
+update tb1 set f1 = char10, f2 =1000 , f3 = 121.555  where f1 = char5 AND f2 = 1239
+update tb1 set f1 = char100, f2 =10000 , f3 = 121.555  where f1 = char10 AND f2 = 1000
+
+
+SELECT 필드이름1 , 필드이름2 .... from 테이블이름 where 조건  group by 필드
+select * from tb1
+select f1, f2 from tb1

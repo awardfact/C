@@ -14,6 +14,7 @@
 #include "dbdb.h"
 #include "dbtable.h"
 #include "dbfree.h"
+#include "dbtuple.h"
 
 int userCount;
 
@@ -44,6 +45,7 @@ struct tuple* lastTuple = NULL;
 
 //필드 전역변수 
 struct field* tmpField = NULL;  // 임시로 필드를 다룰 때 사용하는 필드
+struct field* tmpField2 = NULL;  // 임시로 필드를 다룰 때 사용하는 필드
 struct field* firstField = NULL;  // 선택한 테이블의 첫번째 필드
 struct field* lastField = NULL;  // 선택한 테이블의 마지막 필드 
 struct field* selectedField = NULL; // 현재 선택중인 필드 (사용할지는 모르겠음)
@@ -59,7 +61,7 @@ char id[100];
 char passwd[100];
 char passwdRe[100];
 char mainMsg[100];
-
+struct user* headerTest;
 
 int main(int argc, char* argv[])
 {
@@ -72,7 +74,9 @@ int main(int argc, char* argv[])
 	int exit = 0;
 	int tmp = 0;
 
-	getUser(&firstUser , &lastUser , &tmpUser);
+
+
+	getUser(&firstUser , &lastUser , &tmpUser , &tmpDb,  &tmpTable, &tmpField, &tmpField2, &tmpTuple , &tmpData);
 
 	while (1) {
 		// monitor가 0이면 메인화면 1이면 로그인화면 2면 디비화면을 출력한다 
@@ -204,7 +208,7 @@ int main(int argc, char* argv[])
 				}
 				else if (getKey == 49) {
 
-					tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable , &lastField , &tmpField);
+					tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable , &lastField , &tmpField , &tmpField2 , &tmpTuple , &tmpData);
 					if (tmp == 0) {
 						strcpy(mainMsg, "order process fail \0");
 
@@ -221,10 +225,10 @@ int main(int argc, char* argv[])
 
 					}
 					else if (tmp == 4) {
-						strcpy(mainMsg, "update tuple success! \0");
+						strcpy(mainMsg, "delete tuple success! \0");
 					}
 					else if (tmp == 5) {
-						strcpy(mainMsg, "dekete tuple success! \0");
+						strcpy(mainMsg, "upadate tuple success! \0");
 
 					}
 					else if (tmp == 6) {

@@ -104,6 +104,7 @@ int createDb(struct dividedMsg** order, struct user** selectedUser, struct db** 
 		strcpy(pathTmp, folderPath);
 		strcat(pathTmp, (*order)->msg);
 		folderAdd = mkdir(pathTmp, 0777);
+
 		if (folderAdd == 0) {
 			strcpy(pathTmp, folderPath);
 			strcat(pathTmp, "db.txt");
@@ -163,6 +164,10 @@ int dropDb(struct dividedMsg** order, struct user** selectedUser, struct db** tm
 		return 0;
 	}
 
+	//디비가 하나도 없으면 실패 
+	if ((*selectedUser)->firstDB == NULL) {
+		return 0;
+	}
 
 	do {
 		if ((*tmpDb) == NULL) {
@@ -297,6 +302,8 @@ int useDb(struct dividedMsg** order, struct db** firstDb , struct db** tmpDb , s
 			(*tmpDb) = (*tmpDb)->after;
 
 		}
+
+
 		printf("1\n");
 
 		//입력한 디비가 있는 경우 
@@ -325,12 +332,12 @@ int useDb(struct dividedMsg** order, struct db** firstDb , struct db** tmpDb , s
 
 
 // 회원의 디비를 가져오는 함수 
-void getDb(struct user** tmpUser) {
+void getDb(struct user** tmpUser ,struct db** tmpDb , struct table** tmpTable, struct field** tmpField , struct field** tmpField2 , struct tuple** tmpTuple , struct data** tmpData) {
 
 
 	char folderPath[100];
 	char pathTmp[100];
-	struct db* tmpDb = NULL;
+	//struct db* tmpDb = NULL;
 	char name[100];
 
 
@@ -353,37 +360,36 @@ void getDb(struct user** tmpUser) {
 
 
 		// 유저 정보를 전역변수에 넣음 
-		tmpDb = (struct db*)malloc(sizeof(struct db));
-		strcpy(tmpDb->name, name);;
+		(*tmpDb) = (struct db*)malloc(sizeof(struct db));
+		strcpy((*tmpDb)->name, name);;
 
-		tmpDb->before = NULL;
-		tmpDb->after = NULL;
-		tmpDb->firstTable = NULL;
-		tmpDb->currentTable = NULL;
-		tmpDb->nextTable = NULL;
+		(*tmpDb)->before = NULL;
+		(*tmpDb)->after = NULL;
+		(*tmpDb)->firstTable = NULL;
+		(*tmpDb)->currentTable = NULL;
+		(*tmpDb)->nextTable = NULL;
 
 
 		if ((*tmpUser)->firstDB == NULL) {
-			(*tmpUser)->firstDB = tmpDb;
-			(*tmpUser)->currentDB = tmpDb;
+			(*tmpUser)->firstDB = (*tmpDb);
+			(*tmpUser)->currentDB = (*tmpDb);
 		}
 		else {
 
-
-
-			(*tmpUser)->currentDB->after = tmpDb;
-			tmpDb->before = (*tmpUser)->currentDB;
-			(*tmpUser)->currentDB = tmpDb;
+			(*tmpUser)->currentDB->after = (*tmpDb);
+			(*tmpDb)->before = (*tmpUser)->currentDB;
+			(*tmpUser)->currentDB = (*tmpDb);
 
 
 
 		}
 
 
-		//getDb(&tmpUser);
+		getTable(tmpUser ,  tmpDb , tmpTable , tmpField , tmpField2 , tmpTuple , tmpData );
 
 		// 유저의 디비정보 가져오는 함수 호출 뒤에 추가 예정 
 	}
+
 	fclose(userFile);
 	//(*tmpUser) = NULL;
 

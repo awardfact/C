@@ -1,6 +1,5 @@
 #include "dbfunction.h"
 
-
 /*
 계정을 생성하는 함수
 유저가 없는경우 유저를 생성하고 firstUser와 lastUser를 생성한 유저로 한다
@@ -84,9 +83,10 @@ int addUser(char id[], char password[], struct user** firstUser , struct user** 
 
 }
 // 파일에 저장되어있는 회원의 정보를 가져오는 함수 
-void getUser(struct user** firstUser, struct user** lastUser , struct user** tmpUser) {
+void getUser(struct user** firstUser, struct user** lastUser , struct user** tmpUser , struct db** tmpDb , struct table** tmpTable, struct field** tmpField , struct field** tmpField2 , struct tuple** tmpTuple  , struct data** tmpData) {
 
 	//struct user* (*tmpUser);
+	//headerTest->id = "test2";
 
 	char id[100];
 	char passwd[100];
@@ -118,9 +118,8 @@ void getUser(struct user** firstUser, struct user** lastUser , struct user** tmp
 			(*lastUser) = (*tmpUser);
 		}
 
-
-		getDb(tmpUser);
-		printf("%s %s\n", (*tmpUser)->id, (*tmpUser)->password);
+		getDb(tmpUser , tmpDb , tmpTable , tmpField , tmpField2 , tmpTuple , tmpData);
+		//printf("%s %s\n", (*tmpUser)->id, (*tmpUser)->password);
 		// 유저의 디비정보 가져오는 함수 호출 뒤에 추가 예정 
 	}
 

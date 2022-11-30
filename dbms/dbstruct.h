@@ -45,10 +45,12 @@ struct table {
 struct tuple {
 	//  char[100] name;
 	//  char[20] dataType;
-	struct field* field;
-	struct data* data;
-	struct field* before;
-	struct field* after;
+	struct field* firstField;
+	struct field* currentField;
+	struct data* firstData;
+	struct data* currentData;
+	struct tuple* before;
+	struct tuple* after;
 	//   struct data *firstData
 	//  struct data *currentData;
 	//  struct data *nextData;
@@ -58,6 +60,8 @@ struct tuple {
 struct field {
 	char name[100];
 	char dataType[20];
+	int length;
+	int notNull;
 	struct field* before;
 	struct field* after;
 };
@@ -65,6 +69,9 @@ struct field {
 //데이터 구조체 
 struct data {
 	void* data;
+	char cdata[100];
+	float fdata;
+	int idata;
 	struct data* before;
 	struct data* after;
 };
@@ -73,4 +80,16 @@ struct data {
 struct dividedMsg {
 	char msg[100];
 	struct dividedMsg* after;
+	struct dividedMsg* before;
+};
+
+
+//where에 오는 조건 구조체   타입 1 -> =   2 -> !=  3 -> <  4 -> <=  5 ->  >  6-> >=      ,,   after타입   1 -> or  2 -> and 
+struct whereCondition {
+	int type;
+	char field[100];
+	char value[100];
+	int afterType;
+	struct whereCondition* after;
+
 };
