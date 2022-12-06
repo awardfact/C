@@ -1,7 +1,7 @@
 
 
 //메인화면 보여주는 함수 
-void showMain(char mMsg[]) {
+void showMain(char mMsg[], struct sockS* sockTmp) {
 
 	int i = 0;
 	printf("============================================================\n");
@@ -29,7 +29,7 @@ void showMain(char mMsg[]) {
 }
 
 
-void showLogin(char mMsg[] , char loginId[]) {
+void showLogin(char mMsg[] , char loginId[], struct sockS* sockTmp) {
 
 	int i = 0;
 	printf("============================================================\n");
@@ -69,7 +69,7 @@ void showLogin(char mMsg[] , char loginId[]) {
 
 
 
-void showDb(char mMsg[], char loginId[] , char dbName[]) {
+void showDb(char mMsg[], char loginId[] , char dbName[], struct sockS* sockTmp) {
 
 	int i = 0;
 	printf("============================================================\n");

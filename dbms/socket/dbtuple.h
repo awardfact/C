@@ -2,24 +2,24 @@
 
 
 // INSERT명령 
-int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField , struct field** tmpField2, struct tuple** tmpTuple , struct data** tmpData) {
+int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField , struct field** tmpField2, struct tuple** tmpTuple , struct data** tmpData ) {
 
 
 
-	char folderPath[200];
-	char pathTmp[200];
+	char folderPath[1024];
+	char pathTmp[1024];
 	//기본경로 설정
 	strcpy(folderPath, (*selectedUser)->id);
 	strcat(folderPath, "/");
 	strcat(folderPath, (*selectedDb)->name);
 	strcat(folderPath, "/");
 	int insertType = 0;
-	char msgTmp[200];
-	char msgTmp2[200];
+	char msgTmp[1024];
+	char msgTmp2[1024];
 	int isSpace = 0;
 	int i = 0;
 	int j = 0;
-	char tableName[100];
+	char tableName[1024];
 	struct dividedMsg* ftype = NULL;
 	struct dividedMsg* ltype = NULL;
 	struct dividedMsg* ttype = NULL;
@@ -32,7 +32,10 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 	int dataCount = 0;
 	int existTable = 0;
 
-	printf("0\n");
+
+
+	printf("insert1\n");
+	printf("%s \n", afterOrder);
 	if ((*order)->after != NULL) {
 		(*order) = (*order)->after;
 	}
@@ -43,7 +46,6 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 		return 0;
 	}
 
-	printf("1\n");
 	// insert into 테이블 이름 뒤에 VALUE가 올 수도 있고 (가 오고 필드이름이 올 수도 있다  그래서 VALUE오는 타입인지 (오는 타입인지 구분을 해야한다 
 	msgTmp[0] = '\0';
 	while (afterOrder[i] != '\0') {
@@ -76,7 +78,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 		}
 	}
 	msgTmp[j] = '\0';
-
+	printf("insert2\n");
 	strcpy(tableName, msgTmp);
 	// 테이블이 있는 테이블인지 검증을 해야함
 	(*tmpTable) = (*selectedDb)->firstTable;
@@ -441,6 +443,8 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 		(*tmpField) = (*tmpTable)->field;
 		tdata = fdata;
 		ttype = ftype;
+
+		printf("inserttt3333\n");
 		while (tdata != NULL) {
 
 			//첫타입이 NULL인경우 
@@ -480,12 +484,22 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 	(*tmpData) = NULL;
 		return 0;
 	}
-
+	printf("insert3\n");
 
 
 	(*tmpField) = (*tmpTable)->field;
 
+	while ((*tmpField) != NULL) {
 
+		printf("fff %s   \n", (*tmpField)->name);
+		(*tmpField) = (*tmpField)->after;
+
+
+	}
+
+	(*tmpTuple) = NULL;
+
+	(*tmpField) = (*tmpTable)->field;
 	ttype = NULL;
 	tdata = NULL;
 
@@ -500,7 +514,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 			ttype = ttype->after;
 			tdata = tdata->after;
 		}
-
+		printf("insert4  %s   \n" , (*tmpField)->name);
 		//타입이 맞는경우 
 		if (strcmp((*tmpField)->name, ttype->msg) == 0) {
 
@@ -521,7 +535,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 				return 0;
 			}
 
-
+			printf("insert5\n");
 			//데이터가 없는경우 튜플을 할당해주고 필드 데이터를 만들어서 튜플의 처음,마지막 데이터로 설정 
 			if ((*tmpTuple) == NULL) {
 				(*tmpTuple) = (struct tuple*)malloc(sizeof(struct tuple));
@@ -533,7 +547,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 				strcpy((*tmpField2)->dataType, (*tmpField)->dataType);
 				(*tmpField2)->length = (*tmpField)->length;
 				(*tmpField2)->notNull = (*tmpField)->notNull;
-
+				printf("insert6\n");
 				//데이터타입에 따라 다른 값을 할당 
 				if (strcmp((*tmpField)->dataType, "CHAR") == 0 || strcmp((*tmpField)->dataType, "char") == 0 || strcmp((*tmpField)->dataType, "varchar") == 0 || strcmp((*tmpField)->dataType, "VARCHAR") == 0) {
 
@@ -576,7 +590,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 				(*tmpTuple)->firstField = (*tmpField2);
 				(*tmpTuple)->currentField = (*tmpField2);
-
+				printf("insert7\n");
 			}
 			//데이터가 있는경우 필드랑 데이터만 할당하고 튜플의 현재 데이터를 할당한 데이터로 한다 
 			else {
@@ -632,6 +646,8 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 				(*tmpTuple)->currentField->after = (*tmpField2);
 				(*tmpField2)->before = (*tmpTuple)->currentField->before;
 				(*tmpTuple)->currentField = (*tmpField2);
+
+				printf("insert8\n");
 			}
 
 			if (ttype->after != NULL) {
@@ -649,7 +665,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 				}
 			}
-
+			printf("insert9\n");
 			if (tdata->after != NULL) {
 				if (tdata->before != NULL) {
 					tdata->before->after = tdata->after;
@@ -670,7 +686,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 
 			(*tmpField) = (*tmpField)->after;
-
+			printf("insert10\n");
 		}
 		//ttype의 after가 NULL이면 해당 필드는 입력한 필드에 없다는 것이기 때문에 NOTNULL체크 
 		else if (ttype->after == NULL || ttype == NULL) {
@@ -722,7 +738,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 				(*tmpTuple)->firstField = (*tmpField2);
 				(*tmpTuple)->currentField = (*tmpField2);
 
-
+				printf("insert11\n");
 			}
 			//데이터가 있는경우 필드랑 데이터만 할당하고 튜플의 현재 데이터를 할당한 데이터로 한다 
 			else {
@@ -758,10 +774,10 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 			(*tmpField) = (*tmpField)->after;
 
-
+			printf("insert12\n");
 		}
 	}
-
+	printf("insert4\n");
 	strcat(folderPath, (*tmpTable)->name);
 	strcat(folderPath, "/");
 	//테이블에 만든 튜플을 링크연결 
@@ -804,7 +820,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 	}
 	fprintf(dbFile, "\n");
 	fclose(dbFile);
-
+	printf("insert5\n");
 	(*tmpTuple) = NULL;
 	(*tmpField) = NULL;
 	(*tmpField2) = NULL;
@@ -817,7 +833,7 @@ int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 //튜플을 가져오는 함수 
 void getTuple(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField, struct field** tmpField2  , struct tuple** tmpTuple , struct data** tmpData) {
 
-	char folderPath[200];
+	char folderPath[1024];
 	strcpy(folderPath, (*tmpUser)->id);
 	strcat(folderPath, "/");
 	strcat(folderPath, (*tmpDb)->name);
@@ -826,10 +842,10 @@ void getTuple(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable,
 	strcat(folderPath, "/");
 
 
-	char tmpChar[100];
+	char tmpChar[1024];
 	float tmpFloat;
 	int tmpInt;
-	char pathTmp[200];
+	char pathTmp[1024];
 
 	strcpy(pathTmp, folderPath);
 	strcat(pathTmp, "data.txt");
@@ -932,19 +948,19 @@ void getTuple(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable,
 
 // delete명령 
 int deleteTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData) {
-	char folderPath[200];
-	char pathTmp[200];
+	char folderPath[1024];
+	char pathTmp[1024];
 	//기본경로 설정
 	strcpy(folderPath, (*selectedUser)->id);
 	strcat(folderPath, "/");
 	strcat(folderPath, (*selectedDb)->name);
 	strcat(folderPath, "/");
-	char msgTmp[200];
+	char msgTmp[1024];
 	int i = 0;
 	int j = 0;
 	int isDelete = 0;
 	int isCondition = 0;
-	char tableName[100];
+	char tableName[1024];
 	struct whereCondition* where = NULL;
 	struct whereCondition* whereTmp = NULL;
 	struct whereCondition* whereEnd = NULL;
@@ -1061,24 +1077,24 @@ int deleteTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 //update명령 
 int updateTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData) {
-	char folderPath[200];
-	char pathTmp[200];
+	char folderPath[1024];
+	char pathTmp[1024];
 	//기본경로 설정
 	strcpy(folderPath, (*selectedUser)->id);
 	strcat(folderPath, "/");
 	strcat(folderPath, (*selectedDb)->name);
 	strcat(folderPath, "/");
-	char msgTmp[200];
+	char msgTmp[1024];
 	int i = 0;
 	int j = 0;
 	int isUpdate = 0;
 	int isCondition = 0;
-	char tableName[100];
+	char tableName[1024];
 	struct whereCondition* where = NULL;
 	struct whereCondition* whereTmp = NULL;
 	struct whereCondition* whereEnd = NULL;
 
-	char cTmp[200];
+	char cTmp[1024];
 	float fTmp;
 	int iTmp;
 
@@ -1229,22 +1245,22 @@ int updateTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 
 
-int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData) {
+int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData, struct sockS* sockTmp) {
 
 
-	char msgTmp[200];
+	char msgTmp[1024];
 	int i = 0;
 	int j = 0;
 	int isSelect = 0;
 	int isUpdate = 0;
 	int isCondition = 0;
 	int star = 0;
-	char tableName[100];
+	char tableName[1024];
 	struct whereCondition* where = NULL;
 	struct whereCondition* whereTmp = NULL;
 	struct whereCondition* whereEnd = NULL;
-
-	char cTmp[200];
+	int count = 0;
+	char cTmp[1024];
 	float fTmp;
 	int iTmp;
 
@@ -1253,7 +1269,8 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 	struct whereCondition* selectEnd = NULL;
 
 	int fieldNum = 0;
-
+	int wresult = 0;
+	int result = 0;
 
 	j = findStar(afterOrder);
 
@@ -1271,8 +1288,11 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 	selectTmp = select;
 
 
-	
+	//strcpy(msgTmp, "!start!");
+	msgTmp[strlen(msgTmp)] = '\n';
+	wresult = write(sockTmp->cSock, msgTmp, 1024);
 
+//	usleep(100000);
 
 	//select필드값이 제대로 안되어있으면 실패 
 	if (i == -1) {
@@ -1310,9 +1330,21 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 		return 0;
 	}
 
-	(*tmpTuple) = NULL;
-	(*tmpTuple) = (*tmpTable)->firstData;
 
+	(*tmpTuple) = NULL;
+
+	if ((*tmpTable)->currentData != NULL) {
+		(*tmpTuple) = (*tmpTable)->currentData;
+
+
+	}
+	else {
+		return 0;
+	}
+	
+
+
+	//printf("tuple :  %s\n", (*tmpTable)->currentData->firstData->cdata);
 	//그다음에 where을 찾음 
 	i = findMsg(afterOrder, "where", "WHERE", i);
 	if (i != -1) {
@@ -1330,6 +1362,7 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 
 
+	//printf("4\n");
 
 	(*tmpField) = (*tmpTuple)->firstField;
 	selectTmp = select;
@@ -1363,12 +1396,13 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 
 	}
+	//printf("5\n");
 
 
 	(*tmpField) = (*tmpTuple)->firstField;
 	selectTmp = select;
-	printf("\n");
-	printf("\n");
+	//printf("\n");
+//	printf("\n");
 
 	while (selectTmp != NULL) {
 
@@ -1379,24 +1413,31 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 	}
 
+
+	//wresult = write(sockTmp->cSock, "\n\n", 1024);
+	
+
+
+
 	for (i = 0; i < fieldNum; i++) {
-		printf("================================");
+		//wresult = write(sockTmp->cSock, "================================", 1024);
+		//printf("================================");
 	}
-	printf("\n=");
+	//wresult = write(sockTmp->cSock, "\n=", 1024);
 	selectTmp = select;
 	while (selectTmp != NULL) {
 
 
 
-
-		printf("     %20s     =", selectTmp->field);
+		//wresult = write(sockTmp->cSock, "selectTmp->field", 1024);
+		//printf("     %20s     =", selectTmp->field);
 		selectTmp = selectTmp->after;
 
 
 	}
-	printf("\n");
+	//wresult = write(sockTmp->cSock, "\n", 1024);
 	for (i = 0; i < fieldNum; i++) {
-		printf("================================");
+	//	wresult = write(sockTmp->cSock, "================================", 1024);
 	}
 
 
@@ -1449,7 +1490,9 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 		//조건에 맞는 튜플 수정 
 		if (j == 1) {
-			printf("\n=");
+
+			//wresult = write(sockTmp->cSock, "\n=", 1024);
+			
 			selectTmp = select;
 			(*tmpField) = (*tmpTuple)->firstField;
 			(*tmpData) = (*tmpTuple)->firstData;
@@ -1460,16 +1503,29 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 					//데이터 값을 출력
 					if (strcmp((*tmpField)->dataType, "CHAR") == 0 || strcmp((*tmpField)->dataType, "char") == 0 || strcmp((*tmpField)->dataType, "varchar") == 0 || strcmp((*tmpField)->dataType, "VARCHAR") == 0) {
-						printf("     %20s     =", (*tmpData)->cdata);
+						//printf("     %20s     =", (*tmpData)->cdata);
+					//	usleep(100000);
+						memset(msgTmp, 0x00, 1024);
+						strcpy(msgTmp, (*tmpData)->cdata);
+						//msgTmp[strlen(msgTmp)] = '\n';
+						printf("printf\n");
+						//strcat(msgTmp , "\0");
+
+						wresult = write(sockTmp->cSock, msgTmp, 1024 );
 
 					}
 					else if (strcmp((*tmpField)->dataType, "float") == 0 || strcmp((*tmpField)->dataType, "FLOAT") == 0) {
-
-						printf("      %20.5f     =", (*tmpData)->fdata);
+						sprintf(msgTmp, "%f", (*tmpData)->fdata);
+						//strcat(msgTmp, "\n");
+						wresult = write(sockTmp->cSock, msgTmp, 1024);
+						//printf("      %20.5f     =", (*tmpData)->fdata);
 					}
 					else if (strcmp((*tmpField)->dataType, "int") == 0 || strcmp((*tmpField)->dataType, "INT") == 0) {
-
-						printf("     %20i     =", (*tmpData)->idata);
+						sprintf(msgTmp, "%d", (*tmpData)->idata);
+						//strcat(msgTmp, "\n");
+						wresult = write(sockTmp->cSock, msgTmp, 1024);
+						//wresult = write(sockTmp->cSock, (*tmpData)->idata, 1024);
+						//printf("     %20i     =", (*tmpData)->idata);
 					}
 					selectTmp = selectTmp->after;
 				}
@@ -1494,14 +1550,31 @@ int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** sele
 
 			isSelect = 6;
 		}
-		(*tmpTuple) = (*tmpTuple)->after;
-	}
-	printf("\n");
-	for (i = 0; i < fieldNum; i++) {
-		printf("================================");
-	}
-	printf("\n");
+		(*tmpTuple) = (*tmpTuple)->before;
+		count++;
 
+		if (count >= 10) {
+			break;
+		}
 
+	}
+	//usleep(100000);
+	//usleep(15000);
+	memset(msgTmp, 0x00, 1024);
+	strcpy(msgTmp, "!end!");
+	//msgTmp[strlen(msgTmp)] = '\n';
+	wresult = write(sockTmp->cSock, msgTmp, 1024);
+	printf("printf\n");
+
+	//wresult = write(sockTmp->cSock, msgTmp, 7);
+	//wresult = write(sockTmp->cSock, msgTmp, 7);
+	//wresult = write(sockTmp->cSock, "\n", 1024);
+	//for (i = 0; i < fieldNum; i++) {
+	//	wresult = write(sockTmp->cSock, "================================", 1024);
+	//}
+	//wresult = write(sockTmp->cSock, "\n", 1024);
+
+	//sleep(1);
+	//sleep(1);
 	return isSelect;
 }

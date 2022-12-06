@@ -1,7 +1,6 @@
 #include "dbfunction.h"
 
 
-
 //CREATE TABLE 테이블이름 (필드이름1 타입이름, 필드이릅2 타입이름2 .....);
 int createTable(struct dividedMsg** order , char afterOrder[] ,struct user** selectedUser ,struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable , struct field** lastField , struct field** tmpField) {
 

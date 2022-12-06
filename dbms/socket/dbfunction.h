@@ -3,9 +3,9 @@
 
 
 //dbshow 헤더 함수 
-void showMain();   // 메인화면 출력 함수 
-void showDb(char mMsg[], char loginId[], char dbName[]); // 디비 화면 출력 함수 
-void showLogin();   // 로그인함수 출력 함수 
+void showMain(char mMsg[], struct sockS* sockTmp);   // 메인화면 출력 함수 
+void showDb(char mMsg[], char loginId[], char dbName[], struct sockS* sockTmp); // 디비 화면 출력 함수 
+void showLogin(char mMsg[], char loginId[], struct sockS* sockTmp);   // 로그인함수 출력 함수 
 //dbshow 헤더 함수 
 
 //dbfile헤더 함수 
@@ -26,9 +26,9 @@ int findStar(char msg[]); //*을 찾는 함수
 
 
 //dborder 헤더 함수 
-void divide(char msg[] , char msgTmp[], struct dividedMsg** dorderF, struct dividedMsg** dorderL, struct dividedMsg** dorderT);  // 명령을 받아서 명령을 공백으로 나누는 함수 
-int userOrder(struct user** selectedUser, struct db** tmpDb, struct db** firstDb, struct db** lastDb, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable);  // 로그인 상태에서 데이터베이스 명령어 사용 함수   CREATE , DROP   ->database 
-int dbOrder(struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** lastField, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData); // db명령 함수 
+void divide(char msg[], char msgTmp[], struct dividedMsg** dorderF, struct dividedMsg** dorderL, struct dividedMsg** dorderT);  // 명령을 받아서 명령을 공백으로 나누는 함수 
+int userOrder(struct user** selectedUser, struct db** tmpDb, struct db** firstDb, struct db** lastDb, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct sockS* sockTmp);  // 로그인 상태에서 데이터베이스 명령어 사용 함수   CREATE , DROP   ->database 
+int dbOrder(struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** lastField, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData, struct sockS* sockTmp); // db명령 함수 
 //dborder 헤더 함수 
 
 
@@ -36,11 +36,11 @@ int dbOrder(struct user** selectedUser, struct db** selectedDb, struct table** f
 
 //dbuser헤더 함수 
 int addUser(char id[], char password[], struct user** firstUser, struct user** lastUser, struct user** tmpUser);   //아이디와 패스워드를 받고 계정을 생성하는 함수
-void getUser(struct user** firstUser, struct user** lastUser, struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField,struct field** tmpField2  , struct tuple** tmpTuple , struct data** tmpData);   // 시작할 때 회원 정보 파일에서 불러오는 함수 
+void getUser(struct user** firstUser, struct user** lastUser, struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData);   // 시작할 때 회원 정보 파일에서 불러오는 함수 
 int deleteUser(char id[], char password[], struct user** firstUser, struct user** lastUser, struct user** tmpUser); // 사용자 삭제 함수 
-int login(char id[], char passwd[], struct user** firstUser, struct user** selectedUser, struct user** tmpUser);   // 로그인하는 함수 
-int signUp(struct user** firstUser, struct user** lastUser, struct user** tmpUser);   // 회원가입 함수 
-int signOut(struct user** firstUser, struct user** lastUser, struct user** tmpUser);   //회원탈퇴 함수 
+int login(char id[], char passwd[], struct user** firstUser, struct user** selectedUser, struct user** tmpUser, struct sockS* sockTmp);   // 로그인하는 함수 
+int signUp(struct user** firstUser, struct user** lastUser, struct user** tmpUser, struct sockS* sockTmp);   // 회원가입 함수 
+int signOut(struct user** firstUser, struct user** lastUser, struct user** tmpUser, struct sockS* sockTmp);   //회원탈퇴 함수 
 int logOut(struct user** selectedUser);  //로그아웃 함수 
 //dbuser헤더 함수 
 
@@ -52,14 +52,14 @@ int createDb(struct dividedMsg** order, struct user** selectedUser, struct db** 
 int dropDb(struct dividedMsg** order, struct user** selectedUser, struct db** tmpDb, struct db** firstDb, struct db** lastDb);   // 디비 삭제함수
 int useDb(struct dividedMsg** order, struct db** firstDb, struct db** tmpDb, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable);// 디비 사용 함수 
 int showDb2(struct dividedMsg** order, struct db** firstDb, struct db** tmpDb, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable);// 디비 show 함수 
-void getDb(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField , struct field** tmpField2, struct tuple** tmpTuple , struct data** tmpData);  //유저들의 디비 정보를 가져오는 함수 
+void getDb(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData);  //유저들의 디비 정보를 가져오는 함수 
 //dbdb 헤더 함수 
 
 
 //dbTable헤더 함수 
 int createTable(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** lastField, struct field** tmpField);//CREATE TABLE 테이블이름 (필드이름1 타입이름, 필드이릅2 타입이름2 .....);
 int dropTable(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField); //drop table 테이ㅁ블이름
-void getTable(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField , struct field** tmpField2, struct tuple** tmpTuple , struct data** tmpData);// 테이블을 가져오는 함수 
+void getTable(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData);// 테이블을 가져오는 함수 
 //dbTable헤더 함수 
 
 
@@ -74,11 +74,11 @@ void freeWhereCondition(struct whereCondition** freeW);
 
 
 //dbTuple 헤더 함수 
-int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField  , struct field** tmpField2, struct tuple** tmpTuple , struct data** tmpData);   //insert명령어 
-int deleteTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField  , struct field** tmpField2, struct tuple** tmpTuple , struct data** tmpData);   //delete 명령어
+int insertTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData);   //insert명령어 
+int deleteTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData);   //delete 명령어
 int updateTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData); //update명령 실행 
-int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData); //select명령 실행 
-void getTuple(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField , struct field **tmpField2  , struct tuple** tmpTuple , struct data** getData); //  튜플을 가져오는 함수 
+int selectTuple(struct dividedMsg** order, char afterOrder[], struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData, struct sockS* sockTmp); //select명령 실행 
+void getTuple(struct user** tmpUser, struct db** tmpDb, struct table** tmpTable, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** getData); //  튜플을 가져오는 함수 
 //dbTuple 헤더 함수 
 
 

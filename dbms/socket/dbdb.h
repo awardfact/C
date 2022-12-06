@@ -1,6 +1,5 @@
 #include "dbfunction.h"
 
-
 //디비 생성 함수 
 int createDb(struct dividedMsg** order, struct user** selectedUser, struct db** tmpDb, struct db** firstDb, struct db** lastDb){
 

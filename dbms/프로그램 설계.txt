@@ -306,6 +306,10 @@ create table tb4( f1 char (20) ,f2 int (5) NOT NULL ,f3 float (4) NULL)
 create table tb5( f1 varchar (20) , f2 int (5) NOT NULL , f3 float (4) NULL)
 create table tb6( f1 char (20) , f2 int (5) NOT NULL , f3 float (4) NULL)
 
+
+create table tb1(f char(20),ff int(5)NOT NULL,fff char(14))
+
+
 drop table tb1
 drop table tb2
 drop table tb3
@@ -325,6 +329,12 @@ insert into tb1 VALUES("char" , 1234)
 insert into tb1 VALUES("char")
 insert into tb1 VALUES(123123)
 insert into tb1 VALUES(123123)
+
+
+
+
+insert into tb1(f, ff, fff)VALUES("char" , 1234, 56.78)
+insert into tb1 VALUES("char" , 1234, 56.78)
 
 ! -> 33
 < -> 60
@@ -346,3 +356,17 @@ update tb1 set f1 = char100, f2 =10000 , f3 = 121.555  where f1 = char10 AND f2 
 SELECT 필드이름1 , 필드이름2 .... from 테이블이름 where 조건  group by 필드
 select * from tb1
 select f1, f2 from tb1
+select f1, f2 from tb1 where f1 = NULL AND f2 > 1234
+
+
+
+
+gcc dbServer.c -o dbServer -lpthread
+
+
+./dbServer 10.0.2.15 8080
+
+
+ ./mydb 192.168.56.1 8080
+ ./socketServer 192.168.56.1 8081 8080
+./socketClient 192.168.56.1 8081

@@ -69,6 +69,7 @@ int main(int argc, char* argv[])
 	char c;
 
 	int monitor = 0;
+	int monitor2 = 0;
 	char order[1000];
 	char getKey = '\0';
 	int exit = 0;
@@ -79,6 +80,20 @@ int main(int argc, char* argv[])
 	getUser(&firstUser , &lastUser , &tmpUser , &tmpDb,  &tmpTable, &tmpField, &tmpField2, &tmpTuple , &tmpData);
 
 	while (1) {
+
+
+
+
+		if (monitor2 != 0) {
+
+
+			getKey = getch();
+			monitor2 = 0;
+
+
+		}
+
+
 		// monitor가 0이면 메인화면 1이면 로그인화면 2면 디비화면을 출력한다 
 		switch (monitor) {
 
@@ -177,6 +192,11 @@ int main(int argc, char* argv[])
 						monitor = 2;
 
 					}
+					else if (tmp == 4) {
+						printf("Press any key to return. \n");
+						getKey = getch();
+						monitor2 = 1;
+					}
 					getKey = '\0';
 
 				}
@@ -209,6 +229,8 @@ int main(int argc, char* argv[])
 				else if (getKey == 49) {
 
 					tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable , &lastField , &tmpField , &tmpField2 , &tmpTuple , &tmpData);
+
+				//	printf("tmp : :  %d\n", tmp);
 					if (tmp == 0) {
 						strcpy(mainMsg, "order process fail \0");
 
@@ -233,7 +255,11 @@ int main(int argc, char* argv[])
 					}
 					else if (tmp == 6) {
 						//select 
-
+						printf("Press any key to return. \n");
+						getKey = getch();
+						monitor2 = 1;
+						//getKey = '\0';
+						strcpy(mainMsg, "select tuple success! \0");
 					}
 					getKey = '\0';
 
@@ -248,7 +274,7 @@ int main(int argc, char* argv[])
 					getKey = '\0';
 				}
 
-
+				printf("tmpOut\n");
 			break;
 
 		}

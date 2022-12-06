@@ -1,6 +1,5 @@
+
 #include "dbfunction.h"
-
-
 
 //select뒤에 *가 나오는지 체크하는 함수 
 int findStar(char msg[]) {
@@ -43,8 +42,6 @@ int findStar(char msg[]) {
 
 			tmpMsg[j] = msg[i];
 			j++;
-
-
 		}
 
 		i++;

@@ -141,20 +141,38 @@ void divide(char msg[] , char msgTmp[] , struct dividedMsg** dorderF , struct di
 
 
 // 사용자가 명령어를 입력하는 함수 
-int userOrder(struct user** selectedUser , struct db** tmpDb , struct db** firstDb , struct db** lastDb , struct db** selectedDb , struct table** firstTable , struct table** lastTable , struct table** tmpTable) {
-	char order[1000];
-	char tmpOrder[1000];
+int userOrder(struct user** selectedUser, struct db** tmpDb, struct db** firstDb, struct db** lastDb, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct sockS* sockTmp) {
+	char order[1024];
+	char tmpOrder[1024];
 	struct dividedMsg* dorderF = NULL;
 	struct dividedMsg* dorderL = NULL;
 	struct dividedMsg* dorderT = NULL;
-	printf("============================================================\n");
-	printf("=                                                          =\n");
-	printf("=                     input Order                          =\n");
-	printf("=                                                          =\n");
 
-	printf("= input : ");
-	//입력을 받고 입력 받은 값을 공백으로 분리 
-	scanf("%[^\n]s", order);
+	int wresult = 0;
+	int result = 0;
+
+
+	wresult = write(sockTmp->cSock, "============================================================\n", 1024);
+	wresult = write(sockTmp->cSock, "=                                                          =\n", 1024);
+	wresult = write(sockTmp->cSock, "=                     input Order                          =\n", 1024);
+	wresult = write(sockTmp->cSock, "=                                                          =\n", 1024);
+	wresult = write(sockTmp->cSock, "= input user : \n", 1024);
+
+
+	result = read(sockTmp->cSock, order, 1024);
+
+
+
+
+
+	//printf("============================================================\n");
+	//printf("=                                                          =\n");
+	//printf("=                     input Order                          =\n");
+	//printf("=                                                          =\n");
+
+	//printf("= input : ");
+	////입력을 받고 입력 받은 값을 공백으로 분리 
+	//scanf("%[^\n]s", order);
 	// printf("%s \n", order);
 	divide(order, tmpOrder ,  &dorderF, &dorderL , &dorderT);
 
@@ -189,23 +207,40 @@ int userOrder(struct user** selectedUser , struct db** tmpDb , struct db** first
 
 
 // 데이터베이스 명령어 입력하는 함수 
-int dbOrder(struct user** selectedUser ,struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable  , struct field** lastField , struct field** tmpField , struct field** tmpField2 , struct tuple** tmpTuple , struct data** tmpData) {
-
-	char order[1000];
+int dbOrder(struct user** selectedUser, struct db** selectedDb, struct table** firstTable, struct table** lastTable, struct table** tmpTable, struct field** lastField, struct field** tmpField, struct field** tmpField2, struct tuple** tmpTuple, struct data** tmpData, struct sockS* sockTmp) {
 
 
-	char tmpOrder[1000];
+	printf("11\n");
+	char order[1024];
+	int wresult = 0;
+	int result = 0;
+	char tmpOrder[1024];
 	struct dividedMsg* dorderF = NULL;
 	struct dividedMsg* dorderL = NULL;
 	struct dividedMsg* dorderT = NULL;
-	printf("============================================================\n");
-	printf("=                                                          =\n");
-	printf("=                     input Order                          =\n");
-	printf("=                                                          =\n");
 
-	printf("= input : ");
-	//입력을 받고 입력 받은 값을 공백으로 분리 
-	scanf("%[^\n]s", order);
+
+	//wresult = write(sockTmp->cSock, "============================================================\n", 1024);
+	//wresult = write(sockTmp->cSock, "=                                                          =\n", 1024);
+	//wresult = write(sockTmp->cSock, "=                     input Order                          =\n", 1024);
+	//wresult = write(sockTmp->cSock, "=                                                          =\n", 1024);
+	//wresult = write(sockTmp->cSock, "= input db : \n", 1024);
+
+
+	result = read(sockTmp->cSock, order, 1024);
+	printf("22\n");
+
+
+
+
+	//printf("============================================================\n");
+	//printf("=                                                          =\n");
+	//printf("=                     input Order                          =\n");
+	//printf("=                                                          =\n");
+
+	//printf("= input : ");
+	////입력을 받고 입력 받은 값을 공백으로 분리 
+	//scanf("%[^\n]s", order);
 
 	if (order[0] == '\0') {
 		return 0;
@@ -239,7 +274,7 @@ int dbOrder(struct user** selectedUser ,struct db** selectedDb, struct table** f
 
 	}
 	else if (strcmp(dorderF->msg, "select") == 0 || strcmp(dorderF->msg, "SELECT") == 0) {
-		return selectTuple(&dorderF, tmpOrder, selectedUser, selectedDb, firstTable, lastTable, tmpTable, tmpField, tmpField2, tmpTuple, tmpData);
+		return selectTuple(&dorderF, tmpOrder, selectedUser, selectedDb, firstTable, lastTable, tmpTable, tmpField, tmpField2, tmpTuple, tmpData , sockTmp);
 
 	}
 	else {

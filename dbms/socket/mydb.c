@@ -5,28 +5,35 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
-#include <mongoc.h>
-#include  "cJSON/cJSON.h"
+//#include <mongoc.h>
+//#include  "cJSON/cJSON.h"
 //#include <bson.h>
 #include <pthread.h>
 //#include <winsock.h>
 #include <errno.h>
 
-
+#include <stdio.h>
+#include <termios.h>
+#include <string.h> 
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <unistd.h>
+#include "dbstruct.h"
+#include "dbfunction.h"
+#include "dbfile.h"
+#include "dbshow.h"
+#include "dbuser.h"
+#include "dborder.h"
+#include "dbdb.h"
+#include "dbtable.h"
+#include "dbfree.h"
+#include "dbtuple.h"
 #include <time.h>
+
 //#pragma comment(lib, "ws2_32.lib")
 
 
-
-
-// 쓰레드 인수로 보낼 구조체 
-struct sockS {
-    int sSock;
-    int cSock;
-    pthread_t client;
-    struct sockS* before;
-    struct sockS* next;
-};
 
 
 // 현재 연결중인 
@@ -47,7 +54,7 @@ struct sockS* clientTmp = NULL;
 time_t t;
 
 char* str;
-bool retval;
+
 
 //클라이언트 추가 함수
 void client_add(int so, int sock);
@@ -115,13 +122,14 @@ int main(int argc, char* argv[])
         printf("listen fail.");
     }
 
-    printf("socket  : %d\n ", sSock);
+   // printf("socket  : %d\n ", sSock);
     while (1) {
         // 4. accept
         if ((cSock = accept(sSock, (struct sockaddr*)&address, &client_addr_size)) < 0) {
             printf("accept");
         }
         else {
+
             // 클라이언트가 연결하면 쓰레드를 만들고 송수신하는  쓰레드 함수 실행 
             client_add(cSock, sSock);
             //cs = pthread_create(&client[client_i], NULL, connect_client,&so[client_i]);
@@ -281,6 +289,7 @@ void* connect_client(void* sockSTmp) {
 
     // 인수로 받은 값을 구조체로 변환
 
+    printf("0\n");
     struct sockS* sockTmp = (struct sockS*)sockSTmp;
     // struct sockS* sockTmp = NULL;
     // sockTmp->sSock =sockSTmp->sSock;
@@ -329,10 +338,10 @@ void* connect_client(void* sockSTmp) {
     struct data* firstData = NULL; // 현재 튜플의 첫 데이터
     struct data* lastData = NULL; // 현재 튜플의 마지막 데이터
 
-    char id[100];
-    char passwd[100];
-    char passwdRe[100];
-    char mainMsg[100];
+    char id[1024];
+    char passwd[1024];
+    char passwdRe[1024];
+    char mainMsg[1024];
     struct user* headerTest;
 
     int i = 0;
@@ -340,8 +349,8 @@ void* connect_client(void* sockSTmp) {
 
     int monitor = 0;
     int monitor2 = 0;
-    char order[1000];
-    char getKey[1000];
+    char order[1024];
+    char getKey[1024];
     int exit = 0;
     int tmp = 0;
 
@@ -350,33 +359,20 @@ void* connect_client(void* sockSTmp) {
     //전송 수신 성공했는지 여부를 받는 변수 선언 
     int result = 0;
     int wresult = 0;
-    int i = 0;
+
     char* str;
-    char name[100] = "client";
+    char name[1024] = "client";
     //메시지를 담는 변수 선언 
     char buf[1024] = "input your name : \0";
+
 
 
     getKey[0] = '\0';
     //클라이언트에 환영 메시지를 보냄
     wresult = write(sockTmp->cSock, "hello Server", 1024);
 
-
     getUser(&firstUser, &lastUser, &tmpUser, &tmpDb, &tmpTable, &tmpField, &tmpField2, &tmpTuple, &tmpData);
-
     while (1) {
-
-        // 클라이언트에게 메시지를 받음 
-        result = read(sockTmp->cSock, buf, 1024);
-
-        // 메시지 받는게 실패하면 해당 클라이언트 소켓 종료 
-        if (result < 1) {
-
-            client_del((struct sockS*)sockSTmp);
-            //printf("connect fail ");
-            break;
-        }
-
 
 
 
@@ -384,7 +380,7 @@ void* connect_client(void* sockSTmp) {
         if (monitor2 != 0) {
 
 
-            getKey = read(sockTmp->cSock, buf, 1024);
+            result = read(sockTmp->cSock, getKey, 1024);
             monitor2 = 0;
 
 
@@ -399,18 +395,30 @@ void* connect_client(void* sockSTmp) {
             //getKEy가 Null이면 입력을 메인화면에서 입력을 받는다 
             if (getKey[0] == '\0') {
 
-                showMain(mainMsg);
-                getKey = read(sockTmp->cSock, buf, 1024);
+                showMain(mainMsg , sockTmp);
+                // 클라이언트에게 메시지를 받음 
+                result = read(sockTmp->cSock, getKey, 1024);
+
+                // 메시지 받는게 실패하면 해당 클라이언트 소켓 종료 
+                if (result < 1) {
+
+                    client_del((struct sockS*)sockSTmp);
+                    //printf("connect fail ");
+                    break;
+                }
+
+
+
             }
 
-
+            //printf("%d \n ", &sockTmp);
             // 0을 입력했으면 프로그램 종료 
             if (getKey[0] == 48) {
                 exit = 1;
             }
             //1을 입력했으면 로그인 화면으로 이동
             else if (getKey[0] == 49) {
-                if (login(id, passwd, &firstUser, &selectedUser, &tmpUser) == 1) {
+                if (login(id, passwd, &firstUser, &selectedUser, &tmpUser ,sockTmp) == 1) {
                     firstDb = selectedUser->firstDB;
                     lastDb = selectedUser->currentDB;
                     monitor = 1;
@@ -427,7 +435,7 @@ void* connect_client(void* sockSTmp) {
             //2를 입력했으면 회원가입 화면으로 이동 
             else if (getKey[0] == 50) {
                 // 회원가입 성공하면 메인페이지로 이동하고 성공 출력 
-                if (signUp(&firstUser, &lastUser, &tmpUser) == 1) {
+                if (signUp(&firstUser, &lastUser, &tmpUser , sockTmp) == 1) {
                     strcpy(mainMsg, "sign up success!\0");
                     getKey[0] = '\0';
                 }
@@ -440,7 +448,7 @@ void* connect_client(void* sockSTmp) {
             }
             else if (getKey[0] == 51) {
                 // 회원탈퇴 성공하면 메인페이지로 이동하고 성공 출력 
-                if (signOut(&firstUser, &lastUser, &tmpUser) == 1) {
+                if (signOut(&firstUser, &lastUser, &tmpUser , sockTmp ) == 1) {
                     strcpy(mainMsg, "sign out success!\0");
                     getKey[0] = '\0';
 
@@ -466,8 +474,14 @@ void* connect_client(void* sockSTmp) {
             //getKEy가 Null이면 입력을 메인화면에서 입력을 받는다 
             if (getKey[0] == '\0') {
                 //	printf("%s \n", selectedUser->id);
-                showLogin(mainMsg, selectedUser->id);
-                getKey[0] = getch();
+                showLogin(mainMsg, selectedUser->id , sockTmp);
+                result = read(sockTmp->cSock, getKey, 1024);
+                if (result < 1) {
+                    client_del((struct sockS*)sockSTmp);
+                    break;
+                }
+
+
             }
 
             // 0을 입력했으면 프로그램 종료 
@@ -475,7 +489,7 @@ void* connect_client(void* sockSTmp) {
                 exit = 1;
             }
             else if (getKey[0] == 49) {
-                tmp = userOrder(&selectedUser, &tmpDb, &firstDb, &lastDb, &selectedDb, &firstTable, &lastTable, &tmpTable);
+                tmp = userOrder(&selectedUser, &tmpDb, &firstDb, &lastDb, &selectedDb, &firstTable, &lastTable, &tmpTable , sockTmp);
                 if (tmp == 0) {
                     strcpy(mainMsg, "order process fail \0");
 
@@ -492,15 +506,15 @@ void* connect_client(void* sockSTmp) {
 
                 }
                 else if (tmp == 4) {
-                 //   printf("Press any key to return. \n");
-                 //   getKey[0] = getch();
+                    //   printf("Press any key to return. \n");
+                    //   getKey[0] = getch();
                     monitor2 = 1;
                 }
                 getKey[0] = '\0';
 
             }
             // 2를 입력하면 로그아웃 
-            else if (getKey == 50) {
+            else if (getKey[0] == 50) {
                 selectedUser = NULL;
                 monitor = 0;
                 strcpy(mainMsg, "logout success!\0");
@@ -517,17 +531,23 @@ void* connect_client(void* sockSTmp) {
             break;
         case 2:
             if (getKey[0] == '\0') {
-                //	printf("%s \n", selectedUser->id);
-                showDb(mainMsg, selectedUser->id, selectedDb->name);
-                getKey[0] = getch();
+                //showDb(mainMsg, selectedUser->id, selectedDb->name , sockTmp);
+                result = read(sockTmp->cSock, getKey, 1024);
+                if (result < 1) {
+                    client_del((struct sockS*)sockSTmp);
+                    break;
+                }
+
+
             }
+
 
             if (getKey[0] == 48) {
                 exit;
             }
             else if (getKey[0] == 49) {
 
-                tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable, &lastField, &tmpField, &tmpField2, &tmpTuple, &tmpData);
+                tmp = dbOrder(&selectedUser, &selectedDb, &firstTable, &lastTable, &tmpTable, &lastField, &tmpField, &tmpField2, &tmpTuple, &tmpData , sockTmp );
 
                 //	printf("tmp : :  %d\n", tmp);
                 if (tmp == 0) {
@@ -554,9 +574,9 @@ void* connect_client(void* sockSTmp) {
                 }
                 else if (tmp == 6) {
                     //select 
-                    printf("Press any key to return. \n");
-                    getKey = getch();
-                    monitor2 = 1;
+                //    printf("Press any key to return. \n");
+                  //  result = read(sockTmp->cSock, getKey, 1024);
+                  //  monitor2 = 1;
                     //getKey = '\0';
                     strcpy(mainMsg, "select tuple success! \0");
                 }

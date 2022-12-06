@@ -1,0 +1,2 @@
+msg char 500 0
+name char 500 0
